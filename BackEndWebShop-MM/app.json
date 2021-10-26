@@ -1,0 +1,29 @@
+{
+  "id": "416a8de2-e591-4cd9-b302-0dc05c5772f0",
+  "name": "BackEndWebShop-MM",
+  "publisher": "BE-Terna",
+  "version": "19.0.0.2021102001",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "19.0.0.0",
+  "idRanges": [
+    {
+      "from": 50110,
+      "to": 50114
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": false,
+    "includeSourceInSymbolFile": false
+  },
+  "runtime": "8.0"
+}
