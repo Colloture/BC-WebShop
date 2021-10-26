@@ -10,7 +10,14 @@
   "help": "",
   "url": "",
   "logo": "",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "432acaf7-84d0-4817-a415-08f90e6a7d20",
+      "name": "BackEndWebShop-KC",
+      "publisher": "Be-Terna",
+      "version": "1.0.0.0"
+    }
+  ],
   "screenshots": [],
   "platform": "1.0.0.0",
   "application": "19.0.0.0",
