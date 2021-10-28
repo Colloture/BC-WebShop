@@ -3,7 +3,7 @@ codeunit 50101 "BCGet Items"
     trigger OnRun()
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
-        TempItem: Record Item temporary;
+        BCStoreItems: Record "BCStore Items";
         httpClient: httpClient;
         HttpResponseMessage: HttpResponseMessage;
         ResponseText: Text;
@@ -17,8 +17,8 @@ codeunit 50101 "BCGet Items"
         httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL"), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
-            ParseJson(ResponseText, TempItem);
-            Page.Run(0, TempItem);
+            ParseJson(ResponseText, BCStoreItems);
+            // Page.Run(0, TempItem);
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
@@ -36,7 +36,7 @@ codeunit 50101 "BCGet Items"
         httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
-    local procedure ParseJson(AuthString: Text; var TempItem: Record Item temporary)
+    local procedure ParseJson(AuthString: Text; var BCStoreItems: Record "BCStore Items")
     var
         JsonObject: JsonObject;
         JsonToken: JsonToken;
@@ -51,14 +51,15 @@ codeunit 50101 "BCGet Items"
         foreach ItemJsonToken in JsonArray do begin
             ItemJsonObject := ItemJsonToken.AsObject();
 
-            TempItem.Init();
-            TempItem."No." := CopyStr(GetFieldValue(ItemJsonObject, 'number').AsCode(), 1, MaxStrLen(TempItem."No."));
-            TempItem.Description := CopyStr(GetFieldValue(ItemJsonObject, 'description').AsText(), 1, MaxStrLen(TempItem.Description));
-            TempItem."Unit Price" := GetFieldValue(ItemJsonObject, 'unitPrice').AsDecimal();
-            TempItem.Inventory := GetFieldValue(ItemJsonObject, 'inventory').AsDecimal();
-            TempItem."Base Unit of Measure" := CopyStr(GetFieldValue(ItemJsonObject, 'baseUnitOfMeasure').AsCode(), 1, MaxStrLen(TempItem."Base Unit of Measure"));
+            BCStoreItems.Init();
+            BCStoreItems."No." := CopyStr(GetFieldValue(ItemJsonObject, 'number').AsCode(), 1, MaxStrLen(BCStoreItems."No."));
+            BCStoreItems.Description := CopyStr(GetFieldValue(ItemJsonObject, 'description').AsText(), 1, MaxStrLen(BCStoreItems.Description));
+            BCStoreItems."Unit Price" := GetFieldValue(ItemJsonObject, 'unitPrice').AsDecimal();
+            BCStoreItems.Inventory := GetFieldValue(ItemJsonObject, 'inventory').AsDecimal();
+            BCStoreItems."Base Unit of Measure" := CopyStr(GetFieldValue(ItemJsonObject, 'baseUnitOfMeasure').AsCode(), 1, MaxStrLen(BCStoreItems."Base Unit of Measure"));
+            BCStoreItems."Item Category" := CopyStr(GetFieldValue(ItemJsonObject, 'itemCategoryCode').AsCode(), 1, MaxStrLen(BCStoreItems."Item Category"));
             // TODO - add picture
-            TempItem.Insert();
+            BCStoreItems.Insert();
         end;
     end;
 

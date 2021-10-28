@@ -4,6 +4,7 @@ pageextension 50100 "BCCustomerExt" extends "Customer List"
     {
         addfirst(navigation)
         {
+            // TODO - izmestiti ove akcije na pravo mesto
             action(BCGetWebServiceItemList)
             {
                 ApplicationArea = All;
@@ -12,6 +13,15 @@ pageextension 50100 "BCCustomerExt" extends "Customer List"
                 Image = Web;
                 Promoted = true;
                 RunObject = codeunit "BCGet Items";
+            }
+            action(BCTestPassword)
+            {
+                ApplicationArea = All;
+                Caption = 'Test Password';
+                Image = Pause;
+                Promoted = true;
+                RunObject = codeunit BCPasswordEncryption;
+                ToolTip = 'Executes the Test Password action.';
             }
         }
     }
