@@ -34,6 +34,9 @@ page 50110 "BCItem-MM"
                 field(intern; Rec.BCIntern)
                 {
                 }
+                field(itemCategoryCode; Rec."Item Category Code")
+                {
+                }
                 field(image; GetItemImage(Rec))
                 {
                 }
@@ -61,8 +64,6 @@ page 50110 "BCItem-MM"
         TenantMedia.Content.CreateInStream(MediaInStream, TextEncoding::Windows);
         MediaJsonObject.Add('image', Base64Convert.ToBase64(MediaInStream)); // "cudna slova" prilagodjava json-u
         MediaJsonObject.SelectToken('image', MediaJsonToken); // uzimamo vrednost 
-
-        // TODO na frontend-u idemo OutStream ili kako smo do sada radili
 
         exit(MediaJsonToken.AsValue().AsText());
     end;
