@@ -21,5 +21,6 @@
     }
   ],
   "showMyCode": true,
-  "runtime": "7.0"
+  "runtime": "7.0",
+  "target": "OnPrem"
 }
