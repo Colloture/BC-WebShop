@@ -38,7 +38,7 @@ page 50103 "BCWeb Shop RC"
                 ApplicationArea = All;
                 Caption = 'Log In';
                 ToolTip = 'Executes the Log In action.';
-                RunObject = page "BCStore Items"; // TODO - link ka login stranici
+                RunObject = page BCLogIn;
             }
         }
         area(Processing)
