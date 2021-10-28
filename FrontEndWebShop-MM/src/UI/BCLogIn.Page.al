@@ -7,7 +7,6 @@ page 50108 "BCLogIn"
     SourceTable = BCLogIn;
     SourceTableTemporary = true;
 
-    // TODO - u codeunit idu podaci pa POST ka serveru i tamo se dodaje u Customer
     layout
     {
         area(Content)
@@ -55,33 +54,12 @@ page 50108 "BCLogIn"
 
                 trigger OnAction()
                 var
-                    Customer: Record Customer;
+                    BCPostCustomer: Codeunit "BCPost Customer";
                 begin
                     if (Rec.Name = '') or (Rec."E-Mail" = '') then
                         Error('Name and E-Mail must be filled in.');
 
-                    Customer.SetRange(Name, Rec.Name);
-                    Customer.SetRange("E-Mail", Rec."E-Mail");
-                    if Customer.FindFirst() then begin
-                        if Customer."Last Date Modified" <> Today then begin
-                            Customer."Last Date Modified" := Today;
-                            Message('Welcome back.');
-                        end
-                        else
-                            Message('You''re already logged in.');
-                    end
-                    else begin
-                        Customer.Init();
-                        Customer."No." := '';
-                        Customer.Name := Rec.Name;
-                        Customer."E-Mail" := Rec."E-Mail";
-                        Customer.Address := Rec.Address;
-                        Customer."Phone No." := Rec."Phone No.";
-                        Customer."Last Date Modified" := Today;
-                        Customer.Insert(true);
-
-                        Message('Successfull login.');
-                    end;
+                    BCPostCustomer.Run(Rec);
 
                     VisibleAction := false;
                     Page.Run(50102);

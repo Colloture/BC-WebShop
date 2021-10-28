@@ -36,7 +36,7 @@ codeunit 50101 "BCGet Items"
         httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
-    local procedure ParseJson(AuthString: Text; var BCStoreItems: Record "BCStore Items")
+    local procedure ParseJson(ResponseText: Text; var BCStoreItems: Record "BCStore Items")
     var
         JsonObject: JsonObject;
         JsonToken: JsonToken;
@@ -44,7 +44,7 @@ codeunit 50101 "BCGet Items"
         ItemJsonToken: JsonToken;
         ItemJsonObject: JsonObject;
     begin
-        JsonObject.ReadFrom(AuthString);
+        JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
         JsonArray := JsonToken.AsArray();
 
