@@ -28,6 +28,15 @@ page 50111 "BCCustomerMM"
                 field(phone; Rec."Phone No.")
                 {
                 }
+                field(genBusPostingGroup; Rec."Gen. Bus. Posting Group")
+                {
+                }
+                field(customerPostingGroup; Rec."Customer Posting Group")
+                {
+                }
+                field(paymentTermsCode; Rec."Payment Terms Code")
+                {
+                }
             }
         }
     }

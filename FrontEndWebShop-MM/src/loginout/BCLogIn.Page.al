@@ -58,6 +58,8 @@ page 50108 "BCLogIn"
                 var
                     BCPostCustomer: Codeunit "BCPost Customer";
                 begin
+                    if (Rec.Name = '') and (Rec."E-Mail" = '') then
+                        exit;
                     BCPostCustomer.Run(Rec);
                     VisibleAction := false;
                     Page.Run(50102);

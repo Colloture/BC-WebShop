@@ -77,7 +77,7 @@ page 50110 "BCCart"
                 PromotedOnly = true;
                 PromotedCategory = Process;
 
-                RunObject = codeunit BCBuyFromCart;
+                RunObject = codeunit BCPostBuyFromCart;
             }
         }
     }
