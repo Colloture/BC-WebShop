@@ -23,7 +23,7 @@ codeunit 50107 "BCBuyFromCart"
         Rec.DeleteAll();
     end;
 
-    local procedure CreateOrder(var SalesHeader: Record "Sales Header"; CustomerNo: Code[20]; var Rec: Record BCCart)
+    local procedure CreateOrder(var SalesHeader: Record "Sales Header"; CustomerNo: Code[20]; var BCCart: Record BCCart)
     var
         SalesLineNo: Integer;
     begin
@@ -31,11 +31,9 @@ codeunit 50107 "BCBuyFromCart"
 
         SalesLineNo := 10000;
         repeat
-            CreateSalesLine(SalesHeader, SalesLineNo, Rec."Item No.", Rec.Quantity, Rec."Unit Price");
+            CreateSalesLine(SalesHeader, SalesLineNo, BCCart."Item No.", BCCart.Quantity, BCCart."Unit Price");
             SalesLineNo += 10000;
-        until Rec.Next() = 0;
-
-        // Page.Run(Page::"Sales Order", SalesHeader);
+        until BCCart.Next() = 0;
     end;
 
     local procedure CreateSalesHeader(var SalesHeader: Record "Sales Header"; CustomerNo: Code[20])
@@ -77,6 +75,7 @@ codeunit 50107 "BCBuyFromCart"
 
     local procedure CreatePayment(var SalesHeader: Record "Sales Header")
     var
+        BCWebShopSetup: Record "BCWeb Shop Setup";
         GenJournalLine: Record "Gen. Journal Line";
         SalesInvoiceHeader: Record "Sales Invoice Header";
     begin
@@ -91,14 +90,14 @@ codeunit 50107 "BCBuyFromCart"
             GenJournalLine.Validate("Account Type", GenJournalLine."Account Type"::Customer);
             GenJournalLine.Validate("Account No.", SalesHeader."Sell-to Customer No.");
             GenJournalLine.Validate("Currency Code", SalesInvoiceHeader."Currency Code");
-            GenJournalLine.Validate("Payment Method Code", 'CASH'); // TODO - CASH u setup treba
+            GenJournalLine.Validate("Payment Method Code", BCWebShopSetup."Payment Method Code");
             GenJournalLine.Validate("Credit Amount", SalesInvoiceHeader."Amount Including VAT");
             GenJournalLine.Validate("Applies-to Doc. Type", GenJournalLine."Applies-to Doc. Type"::Invoice);
             GenJournalLine.Validate("Applies-to Doc. No.", SalesInvoiceHeader."No.");
             GenJournalLine.Validate("Bal. Account Type", GenJournalLine."Bal. Account Type"::"Bank Account");
-            GenJournalLine.Validate("Bal. Account No.", 'WWB-OPERATING'); // TODO - u setup treba
+            GenJournalLine.Validate("Bal. Account No.", BCWebShopSetup."Bal. Account No.");
 
-            CODEUNIT.Run(CODEUNIT::"Gen. Jnl.-Post Line", GenJournalLine); // knjizenje
+            CODEUNIT.Run(CODEUNIT::"Gen. Jnl.-Post Line", GenJournalLine);
         end;
     end;
 

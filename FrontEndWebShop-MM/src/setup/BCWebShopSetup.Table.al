@@ -41,6 +41,16 @@ table 50100 "BCWeb Shop Setup"
             DataClassification = SystemMetadata;
             Caption = 'Logged In Email';
         }
+        field(8; "Payment Method Code"; Code[10])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Payment Method Code';
+        }
+        field(9; "Bal. Account No."; Code[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Bal. Account No.';
+        }
     }
 
     keys

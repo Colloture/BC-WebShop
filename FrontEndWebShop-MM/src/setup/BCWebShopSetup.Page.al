@@ -40,8 +40,10 @@ page 50101 "BCWeb Shop Setup"
                         ApplicationArea = All;
                     }
                 }
-                group("Logged In")
+                group(LoggedIn) // TODO - nema potrebe da se ovo vidi na Page-u
                 {
+                    Caption = 'Logged In';
+
                     field(UserNo; Rec.UserNo)
                     {
                         ApplicationArea = All;
@@ -59,6 +61,21 @@ page 50101 "BCWeb Shop Setup"
                         ApplicationArea = All;
                         Editable = false;
                         ToolTip = 'Specifies the value of the Email of logged in user.';
+                    }
+                }
+                group(GenJournalLine)
+                {
+                    Caption = 'Gen. Journal Line Settings';
+
+                    field("Payment Method Code"; Rec."Payment Method Code")
+                    {
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies the value of the Payment Method Code field.';
+                    }
+                    field("Bal. Account No."; Rec."Bal. Account No.")
+                    {
+                        ApplicationArea = All;
+                        ToolTip = 'Specifies the value of the Bal. Account No. field.';
                     }
                 }
             }

@@ -18,7 +18,7 @@ codeunit 50105 "BCPost Customer"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content.ReadAs(ResponseText);
             if CustomerExists(ResponseText) then
-                Message('Welcome back. ' + ResponseText)
+                Message('Welcome back.')
             else
                 PostNewCustomer(Rec, HttpResponseMessage, BCWebShopSetup, httpClient, ResponseText);
 
@@ -88,7 +88,7 @@ codeunit 50105 "BCPost Customer"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             ParseResponse(ResponseText);
-            Message('Successfull login. ' + ResponseText)
+            Message('Successfull login.')
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());

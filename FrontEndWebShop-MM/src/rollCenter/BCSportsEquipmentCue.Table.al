@@ -16,25 +16,31 @@ table 50102 "BCSports Equipment Cue"
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items");
         }
-        field(3; Balls; Integer)
+        field(3; "Total No. of Items"; Decimal)
+        {
+            Caption = 'No. of All Items in Inventory';
+            FieldClass = FlowField;
+            CalcFormula = sum("BCStore Items".Inventory);
+        }
+        field(4; Balls; Integer)
         {
             Caption = 'Balls';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('BALL')));
         }
-        field(4; Rackets; Integer)
+        field(5; Rackets; Integer)
         {
             Caption = 'Rackets';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('RACKET')));
         }
-        field(5; Glasses; Integer)
+        field(6; Glasses; Integer)
         {
             Caption = 'Glasses';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('GLASSES')));
         }
-        field(6; Other; Integer)
+        field(7; Other; Integer)
         {
             Caption = 'Other';
             FieldClass = FlowField;
