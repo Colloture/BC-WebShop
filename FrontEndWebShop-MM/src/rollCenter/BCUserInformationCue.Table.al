@@ -24,7 +24,7 @@ table 50103 "BCUser Information Cue"
         {
             Caption = 'No. of Favorite Items';
             FieldClass = FlowField;
-            CalcFormula = count("BCStore Items"); // TODO - Favorites table
+            CalcFormula = count(BCFavorites where(Username = field(Username), Email = field(Email)));
         }
         field(5; Cart; Integer)
         {

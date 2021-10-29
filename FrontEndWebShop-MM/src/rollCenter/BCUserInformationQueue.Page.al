@@ -18,7 +18,7 @@ page 50105 "BCUser Information Queue"
                 {
                     ToolTip = 'Specifies No. of Favorite Items.';
                     ApplicationArea = All;
-                    DrillDownPageId = "BCStore Items"; // TODO - Favorites table
+                    DrillDownPageId = BCFavorites;
                 }
                 field(Cart; Rec.Cart)
                 {

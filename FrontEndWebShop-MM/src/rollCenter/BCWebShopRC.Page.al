@@ -23,7 +23,7 @@ page 50103 "BCWeb Shop RC"
                 part(UserInformationQueue; "BCUser Information Queue")
                 {
                     ApplicationArea = All;
-                    Visible = true; // TODO - visible if user is logged in
+                    Visible = true;
                 }
             }
         }
@@ -50,7 +50,6 @@ page 50103 "BCWeb Shop RC"
         }
         area(Processing)
         {
-            // TODO - visible only when logged in
             action(AllStoreItems)
             {
                 ApplicationArea = All;

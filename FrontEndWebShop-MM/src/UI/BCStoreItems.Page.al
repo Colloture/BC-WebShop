@@ -58,7 +58,7 @@ page 50102 "BCStore Items"
                 ApplicationArea = All;
                 Caption = 'Add to Cart';
                 ToolTip = 'Executes the Add to Cart action.';
-                Image = NewItem;
+                Image = Add;
                 Promoted = true;
                 PromotedOnly = true;
                 PromotedCategory = Process;
@@ -68,10 +68,10 @@ page 50102 "BCStore Items"
                     AddNewItemToCart(Rec);
                 end;
             }
-            action(Cart)
+            action(OpenCart)
             {
                 ApplicationArea = All;
-                Caption = 'Open Your Cart';
+                Caption = 'Your Cart';
                 ToolTip = 'Executes the Open Your Cart action.';
                 Image = Open;
                 Promoted = true;
@@ -81,6 +81,36 @@ page 50102 "BCStore Items"
                 trigger OnAction()
                 begin
                     OpenYourCart();
+                end;
+            }
+            action(AddToFavorites)
+            {
+                ApplicationArea = All;
+                Caption = 'Add to Favorites';
+                ToolTip = 'Executes the Add to Favorites action.';
+                Image = AddAction;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                begin
+                    AddNewItemToFavorites(Rec);
+                end;
+            }
+            action(OpenFavorites)
+            {
+                ApplicationArea = All;
+                Caption = 'Your Favorites';
+                ToolTip = 'Executes the Open Your Favorites action.';
+                Image = OpenJournal;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                begin
+                    OpenYourFavorites();
                 end;
             }
         }
@@ -112,7 +142,6 @@ page 50102 "BCStore Items"
 
         // TODO - do this on backend
         if not BCCart.IsEmpty then begin
-            // todo - check is BCStoreItems has something in inventory
             BCCart.FindFirst();
             BCCart.Quantity += 1;
             BCCart.TotalAmount += BCStoreItems."Unit Price";
@@ -153,5 +182,49 @@ page 50102 "BCStore Items"
         BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
 
         Page.Run(50110, BCCart);
+    end;
+
+    local procedure AddNewItemToFavorites(var BCStoreItems: Record "BCStore Items")
+    var
+        BCFavorites: Record BCFavorites;
+        BCWebShopSetup: Record "BCWeb Shop Setup";
+    begin
+        BCWebShopSetup.Get();
+
+        BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
+        BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+        BCFavorites.SetRange("Item No.", BCStoreItems."No.");
+
+        // TODO - do this on backend
+        if not BCFavorites.IsEmpty then
+            Message('Item is already in Favorites.')
+        else begin
+            BCFavorites.Init();
+            BCFavorites.Username := BCWebShopSetup.LoggedInUsername;
+            BCFavorites.Email := BCWebShopSetup.LoggedInEmail;
+            BCFavorites."Item No." := BCStoreItems."No.";
+            BCFavorites.Description := BCStoreItems.Description;
+            BCFavorites."Item Category" := BCStoreItems."Item Category";
+            BCFavorites."Unit Price" := BCStoreItems."Unit Price";
+            BCFavorites."Base Unit of Measure" := BCStoreItems."Base Unit of Measure";
+            BCFavorites.Inventory := BCStoreItems.Inventory;
+            BCFavorites.Insert();
+
+            Message('New Item added to the Favorites.');
+        end;
+    end;
+
+    local procedure OpenYourFavorites()
+    var
+        BCFavorites: Record BCFavorites;
+        BCWebShopSetup: Record "BCWeb Shop Setup";
+    begin
+        BCWebShopSetup.Get();
+
+        // todo - on backend
+        BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
+        BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+
+        Page.Run(50111, BCFavorites);
     end;
 }
