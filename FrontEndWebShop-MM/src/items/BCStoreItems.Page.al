@@ -142,7 +142,6 @@ page 50102 "BCStore Items"
         BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
         BCCart.SetRange("Item No.", BCStoreItems."No.");
 
-        // TODO - do this on backend
         if not BCCart.IsEmpty then begin
             BCCart.FindFirst();
             BCCart.Quantity += 1;
@@ -179,7 +178,6 @@ page 50102 "BCStore Items"
     begin
         BCWebShopSetup.Get();
 
-        // todo - on backend
         BCCart.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
 
@@ -199,7 +197,6 @@ page 50102 "BCStore Items"
         BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
         BCFavorites.SetRange("Item No.", BCStoreItems."No.");
 
-        // TODO - do this on backend
         if not BCFavorites.IsEmpty then
             Message('Item is already in Favorites.')
         else begin
@@ -225,7 +222,6 @@ page 50102 "BCStore Items"
     begin
         BCWebShopSetup.Get();
 
-        // todo - on backend
         BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
 

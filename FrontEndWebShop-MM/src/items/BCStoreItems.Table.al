@@ -1,7 +1,7 @@
 table 50101 "BCStore Items"
 {
     DataClassification = CustomerContent;
-    // TODO - probati bez ove tabele nekako
+
     fields
     {
         field(1; "No."; Code[20])

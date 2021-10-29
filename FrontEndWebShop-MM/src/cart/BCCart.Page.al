@@ -63,7 +63,6 @@ page 50110 "BCCart"
         }
     }
 
-    // todo - action buy (BCInvoicePosting Test)
     actions
     {
         area(Processing)

@@ -4,10 +4,14 @@ codeunit 50103 "BCPasswordEncryption"
     SingleInstance = true;
 
     trigger OnRun()
+    var
+        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
-        StorePassword('admin', 'Pa$$w0rd!'); // iz setup-a?
-        if UserExists('admin') then
-            Message('%1', GetPassword('admin'))
+        BCWebShopSetup.Get();
+
+        StorePassword(BCWebShopSetup."Backend Username", BCWebShopSetup."Backend Password");
+        if UserExists(BCWebShopSetup."Backend Username") then
+            Message('%1', GetPassword(BCWebShopSetup."Backend Username"))
         else
             Message('User with this username doesnt''t exists.');
     end;

@@ -40,7 +40,7 @@ page 50101 "BCWeb Shop Setup"
                         ApplicationArea = All;
                     }
                 }
-                group(LoggedIn) // TODO - nema potrebe da se ovo vidi na Page-u
+                group(LoggedIn) // TODO - nema potrebe da se ovo vidi na Page-u, trenutno je tu radi testiranja
                 {
                     Caption = 'Logged In';
 
