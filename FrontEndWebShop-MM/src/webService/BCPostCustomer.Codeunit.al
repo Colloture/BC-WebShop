@@ -21,6 +21,10 @@ codeunit 50105 "BCPost Customer"
                 Message('Welcome back.')
             else
                 PostNewCustomer(Rec, HttpResponseMessage, BCWebShopSetup, httpClient);
+
+            BCWebShopSetup.LoggedInUsername := Rec.Name;
+            BCWebShopSetup.LoggedInEmail := Rec."E-Mail";
+            BCWebShopSetup.Modify();
         end;
     end;
 

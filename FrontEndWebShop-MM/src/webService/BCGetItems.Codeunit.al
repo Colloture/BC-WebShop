@@ -18,7 +18,6 @@ codeunit 50101 "BCGet Items"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             ParseJson(ResponseText, BCStoreItems);
-            // Page.Run(0, TempItem);
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());

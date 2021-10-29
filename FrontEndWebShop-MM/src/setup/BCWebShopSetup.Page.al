@@ -40,6 +40,21 @@ page 50101 "BCWeb Shop Setup"
                         ApplicationArea = All;
                     }
                 }
+                group("Logged In")
+                {
+                    field(LoggedInUsername; Rec.LoggedInUsername)
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                        ToolTip = 'Specifies the value of the Username of logged in user.';
+                    }
+                    field(LoggedInEmail; Rec.LoggedInEmail)
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                        ToolTip = 'Specifies the value of the Email of logged in user.';
+                    }
+                }
             }
         }
     }

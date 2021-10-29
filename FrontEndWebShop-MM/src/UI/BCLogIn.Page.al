@@ -5,7 +5,6 @@ page 50108 "BCLogIn"
     ApplicationArea = All;
     UsageCategory = Administration;
     SourceTable = BCLogIn;
-    SourceTableTemporary = true;
 
     layout
     {
@@ -18,6 +17,7 @@ page 50108 "BCLogIn"
                     ApplicationArea = All;
                     Caption = 'Username';
                     ToolTip = 'Specifies the value of the Name field.';
+                    NotBlank = true;
                 }
                 field(Address; Rec.Address)
                 {
@@ -28,6 +28,7 @@ page 50108 "BCLogIn"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Email field.';
+                    NotBlank = true;
                 }
                 field("Phone No."; Rec."Phone No.")
                 {
@@ -40,7 +41,7 @@ page 50108 "BCLogIn"
 
     actions
     {
-        area(Creation)
+        area(Navigation)
         {
             action(LogIn)
             {
@@ -56,11 +57,7 @@ page 50108 "BCLogIn"
                 var
                     BCPostCustomer: Codeunit "BCPost Customer";
                 begin
-                    if (Rec.Name = '') or (Rec."E-Mail" = '') then
-                        Error('Name and E-Mail must be filled in.');
-
                     BCPostCustomer.Run(Rec);
-
                     VisibleAction := false;
                     Page.Run(50102);
                 end;
@@ -69,7 +66,14 @@ page 50108 "BCLogIn"
     }
 
     trigger OnOpenPage()
+    var
+        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
+        BCWebShopSetup.Get();
+        if (BCWebShopSetup.LoggedInUsername <> '') and (BCWebShopSetup.LoggedInEmail <> '') then begin
+            Message('You''re already logged in.');
+            exit;
+        end;
         VisibleAction := true;
     end;
 

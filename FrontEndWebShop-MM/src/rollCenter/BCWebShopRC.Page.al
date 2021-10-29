@@ -40,6 +40,13 @@ page 50103 "BCWeb Shop RC"
                 ToolTip = 'Executes the Log In action.';
                 RunObject = page BCLogIn;
             }
+            action(LogOut)
+            {
+                ApplicationArea = All;
+                Caption = 'Log Out';
+                ToolTip = 'Executes the Log Out action.';
+                RunObject = codeunit BCLogOut;
+            }
         }
         area(Processing)
         {
