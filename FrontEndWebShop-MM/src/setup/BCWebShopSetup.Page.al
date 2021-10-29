@@ -42,6 +42,12 @@ page 50101 "BCWeb Shop Setup"
                 }
                 group("Logged In")
                 {
+                    field(UserNo; Rec.UserNo)
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                        ToolTip = 'Specifies the value of the User No. of logged in user.';
+                    }
                     field(LoggedInUsername; Rec.LoggedInUsername)
                     {
                         ApplicationArea = All;

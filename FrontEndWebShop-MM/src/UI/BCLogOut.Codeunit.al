@@ -5,6 +5,8 @@ codeunit 50106 "BCLogOut"
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
             exit;
+
+        BCWebShopSetup.UserNo := '';
         BCWebShopSetup.LoggedInUsername := '';
         BCWebShopSetup.LoggedInEmail := '';
         BCWebShopSetup.Modify();

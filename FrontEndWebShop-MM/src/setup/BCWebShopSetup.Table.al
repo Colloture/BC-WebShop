@@ -26,12 +26,17 @@ table 50100 "BCWeb Shop Setup"
             ExtendedDatatype = Masked;
             Caption = 'Backend Password';
         }
-        field(5; LoggedInUsername; Text[100])
+        field(5; UserNo; Code[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Logged In User No.';
+        }
+        field(6; LoggedInUsername; Text[100])
         {
             DataClassification = SystemMetadata;
             Caption = 'Logged In Username';
         }
-        field(6; LoggedInEmail; Text[80])
+        field(7; LoggedInEmail; Text[80])
         {
             DataClassification = SystemMetadata;
             Caption = 'Logged In Email';

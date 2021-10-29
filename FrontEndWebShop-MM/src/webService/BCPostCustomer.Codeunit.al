@@ -18,10 +18,11 @@ codeunit 50105 "BCPost Customer"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content.ReadAs(ResponseText);
             if CustomerExists(ResponseText) then
-                Message('Welcome back.')
+                Message('Welcome back. ' + ResponseText)
             else
-                PostNewCustomer(Rec, HttpResponseMessage, BCWebShopSetup, httpClient);
+                PostNewCustomer(Rec, HttpResponseMessage, BCWebShopSetup, httpClient, ResponseText);
 
+            BCWebShopSetup.UserNo := CopyStr(ResponseText, 1, MaxStrLen(BCWebShopSetup.UserNo));
             BCWebShopSetup.LoggedInUsername := Rec.Name;
             BCWebShopSetup.LoggedInEmail := Rec."E-Mail";
             BCWebShopSetup.Modify();
@@ -40,7 +41,7 @@ codeunit 50105 "BCPost Customer"
         httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
-    local procedure CustomerExists(ResponseText: Text): Boolean
+    local procedure CustomerExists(var ResponseText: Text): Boolean
     var
         JsonObject: JsonObject;
         JsonToken: JsonToken;
@@ -52,10 +53,14 @@ codeunit 50105 "BCPost Customer"
         if JsonArray.Count = 0 then
             exit(false)
         else
-            exit(true);
+            foreach JsonToken in JsonArray do begin
+                JsonObject := JsonToken.AsObject();
+                ResponseText := GetFieldValue(JsonObject, 'no').AsCode();
+                exit(true);
+            end;
     end;
 
-    local procedure PostNewCustomer(var BCLogIn: Record BCLogIn; HttpResponseMessage: HttpResponseMessage; var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: httpClient)
+    local procedure PostNewCustomer(var BCLogIn: Record BCLogIn; HttpResponseMessage: HttpResponseMessage; var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: httpClient; var ResponseText: Text)
     var
         Text: Text;
         JsonObject: JsonObject;
@@ -80,9 +85,28 @@ codeunit 50105 "BCPost Customer"
         httpRequestMessage.Method := 'POST';
 
         httpClient.Send(httpRequestMessage, HttpResponseMessage);
-        if HttpResponseMessage.IsSuccessStatusCode() then
-            Message('Successfull login.')
+        if HttpResponseMessage.IsSuccessStatusCode() then begin
+            HttpResponseMessage.Content().ReadAs(ResponseText);
+            ParseResponse(ResponseText);
+            Message('Successfull login. ' + ResponseText)
+        end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
+    end;
+
+    local procedure ParseResponse(var ResponseText: Text)
+    var
+        JsonObject: JsonObject;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        ResponseText := GetFieldValue(JsonObject, 'no').AsCode();
+    end;
+
+    local procedure GetFieldValue(var JsonObject: JsonObject; FieldName: Text): JsonValue
+    var
+        JsonToken: JsonToken;
+    begin
+        JsonObject.Get(FieldName, JsonToken);
+        exit(JsonToken.AsValue());
     end;
 }

@@ -51,6 +51,7 @@ page 50108 "BCLogIn"
                 Image = Log;
                 Promoted = true;
                 PromotedOnly = true;
+                PromotedCategory = Process;
                 Visible = VisibleAction;
 
                 trigger OnAction()

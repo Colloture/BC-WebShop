@@ -44,7 +44,7 @@ page 50110 "BCCart"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Unit Price field.';
                 }
-                field(Quantity; Rec.Quantity) // Increment
+                field(Quantity; Rec.Quantity)
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Quantity field.';
@@ -63,5 +63,24 @@ page 50110 "BCCart"
         }
     }
 
-    // todo - action remove from cart
+    // todo - action buy (BCInvoicePosting Test)
+    actions
+    {
+        area(Processing)
+        {
+            action(Buy)
+            {
+                ApplicationArea = All;
+                Caption = 'Buy';
+                ToolTip = 'Executes the Buy action.';
+                Image = Sales;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                RunObject = codeunit BCBuyFromCart;
+            }
+        }
+    }
+
 }

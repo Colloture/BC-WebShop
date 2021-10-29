@@ -131,10 +131,12 @@ page 50102 "BCStore Items"
         BCCart: Record BCCart;
         BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
+        BCWebShopSetup.Get();
+        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+            Error('Please Log In in order to Add Items to Cart.');
+
         if BCStoreItems.Inventory = 0 then
             Error('This item isn''t available at the moment.');
-
-        BCWebShopSetup.Get();
 
         BCCart.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
@@ -190,6 +192,8 @@ page 50102 "BCStore Items"
         BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
         BCWebShopSetup.Get();
+        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+            Error('Please Log In in order to Add Items to Favorites.');
 
         BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
