@@ -58,20 +58,6 @@ page 50103 "BCWeb Shop RC"
                 ToolTip = 'Executes the All Store Items action.';
                 RunObject = page "BCStore Items";
             }
-            action(Favorites)
-            {
-                ApplicationArea = All;
-                Caption = 'Favorites';
-                ToolTip = 'Executes the Favorites action.';
-                RunObject = page "BCStore Items"; // TODO - link ka Favorites stranici
-            }
-            action(Cart)
-            {
-                ApplicationArea = All;
-                Caption = 'Cart';
-                ToolTip = 'Executes the Cart action.';
-                RunObject = page "BCStore Items"; // TODO - link ka cart-u stranici
-            }
             action(RequestNew)
             {
                 ApplicationArea = All;

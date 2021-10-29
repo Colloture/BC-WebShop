@@ -23,19 +23,32 @@ page 50105 "BCUser Information Queue"
                 field(Cart; Rec.Cart)
                 {
                     ApplicationArea = All;
-                    DrillDownPageId = "BCStore Items";
-                    ToolTip = 'Specifies No. of Items in Cart.'; // TODO - Cart table
+                    DrillDownPageId = BCCart;
+                    ToolTip = 'Specifies No. of Items in Cart.';
+                }
+                field(CartValue; Rec.CartValue)
+                {
+                    ApplicationArea = All;
+                    DrillDownPageId = BCCart;
+                    ToolTip = 'Specifies Value of Items in Cart.';
                 }
             }
         }
     }
 
     trigger OnOpenPage()
+    var
+        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
         Rec.Reset();
         if not Rec.Get() then begin
             Rec.Init();
             Rec.Insert();
         end;
+
+        BCWebShopSetup.Get();
+        Rec.Username := BCWebShopSetup.LoggedInUsername;
+        Rec.Email := BCWebShopSetup.LoggedInEmail;
+        Rec.Modify();
     end;
 }

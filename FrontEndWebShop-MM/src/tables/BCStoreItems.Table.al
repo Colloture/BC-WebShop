@@ -1,7 +1,6 @@
 table 50101 "BCStore Items"
 {
     DataClassification = CustomerContent;
-    // DrillDownPageId = ; TODO - add page for single item
     // TODO - probati bez ove tabele nekako
     fields
     {
