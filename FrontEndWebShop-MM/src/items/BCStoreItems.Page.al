@@ -24,15 +24,15 @@ page 50102 "BCStore Items"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
-                field("Unit Price"; Rec."Unit Price")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Unit Price field.';
-                }
                 field(Inventory; Rec.Inventory)
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Inventory field.';
+                }
+                field("Unit Price"; Rec."Unit Price")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Unit Price field.';
                 }
                 field("Base Unit of Measure"; Rec."Base Unit of Measure")
                 {
@@ -147,9 +147,6 @@ page 50102 "BCStore Items"
             BCCart.Quantity += 1;
             BCCart.TotalAmount += BCStoreItems."Unit Price";
             BCCart.Modify();
-
-            BCStoreItems.Inventory -= 1;
-            BCStoreItems.Modify();
         end
         else begin
             BCCart.Init();
@@ -163,9 +160,6 @@ page 50102 "BCStore Items"
             BCCart."Base Unit of Measure" := BCStoreItems."Base Unit of Measure";
             BCCart.TotalAmount := BCStoreItems."Unit Price";
             BCCart.Insert();
-
-            BCStoreItems.Inventory -= 1;
-            BCStoreItems.Modify();
         end;
 
         Message('New Item added to the Cart.');

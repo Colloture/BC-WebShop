@@ -2,7 +2,6 @@ codeunit 50107 "BCPostBuyFromCart"
 {
     TableNo = BCCart;
 
-    // TODO - sve ovo na backend jer na frontu ne radi (Customer i Items su na backend-u)
     trigger OnRun()
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
@@ -22,9 +21,9 @@ codeunit 50107 "BCPostBuyFromCart"
 
         CreateOrder(BCWebShopSetup, Rec, httpClient, SalesHeaderNo, SalesHeaderDocumentType);
         GetPostOrder(BCWebShopSetup, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo, httpClient);
+        PostCreatePayment(BCWebShopSetup, httpClient, SalesHeaderNo);
 
-        // CreatePayment(SalesHeader);
-        // OpenPostedSalesInvoice(SalesHeader);
+        // OpenPostedSalesInvoice(SalesHeader); -> Poruka da je proknjizeno
 
         Rec.DeleteAll();
     end;
@@ -82,7 +81,6 @@ codeunit 50107 "BCPostBuyFromCart"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(Response);
             ParseResponseSalesHeader(Response, SalesHeaderNo, SalesHeaderDocumentType);
-            Message('Successfull creation of Sales Header.')
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
@@ -118,9 +116,7 @@ codeunit 50107 "BCPostBuyFromCart"
         httpRequestMessage.Method := 'POST';
 
         httpClient.Send(httpRequestMessage, HttpResponseMessage);
-        if HttpResponseMessage.IsSuccessStatusCode() then
-            Message('Successfull creation of Sales Line.')
-        else
+        if not HttpResponseMessage.IsSuccessStatusCode() then
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
@@ -138,56 +134,84 @@ codeunit 50107 "BCPostBuyFromCart"
             HttpResponseMessage.Content().ReadAs(ResponseText);
             JsonObject.ReadFrom(ResponseText);
             ParseJson(ResponseText, PostedSalesHeaderNo);
-            Message('%1', PostedSalesHeaderNo);
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
-    // local procedure CreatePayment(var SalesHeader: Record "Sales Header")
-    // var
-    //     BCWebShopSetup: Record "BCWeb Shop Setup";
-    //     GenJournalLine: Record "Gen. Journal Line";
-    //     SalesInvoiceHeader: Record "Sales Invoice Header";
-    // begin
-    //     if FindPostedSalesInvoice(SalesHeader, SalesInvoiceHeader) then begin
+    local procedure PostCreatePayment(var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: httpClient; SalesHeaderNo: Code[20])
+    var
+        GenJournalLine: Record "Gen. Journal Line";
+        TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary;
+        Text: Text;
+        LineNo: Integer;
+        JsonObject: JsonObject;
+        httpContent: HttpContent;
+        httpHeaders: HttpHeaders;
+        HttpResponseMessage: HttpResponseMessage;
+        httpRequestMessage: HttpRequestMessage;
+        WebErrorMsg: Label 'Error occurred: %1 - %2', Comment = '%1 is HTTP Status Code, %2 is message';
+        BackEndPostUrlLbl: Label '%1/genJournalLinesMM', Comment = '%1 is Web Shop URL';
+    begin
+        if GetPostedSalesInvoice(BCWebShopSetup, TempSalesInvoiceHeader, httpClient, SalesHeaderNo) then begin
 
-    //         SalesInvoiceHeader.CalcFields("Amount Including VAT");
-    //         // POST GenJournalLine
-    //         GenJournalLine.Init();
-    //         GenJournalLine.Validate("Posting Date", Today());
-    //         GenJournalLine.Validate("Document Type", GenJournalLine."Document Type"::Payment);
-    //         GenJournalLine.Validate("Document No.", CopyStr('PAY-' + SalesInvoiceHeader."No.", 1, MaxStrLen(GenJournalLine."Document No.")));
-    //         GenJournalLine.Validate("Account Type", GenJournalLine."Account Type"::Customer);
-    //         GenJournalLine.Validate("Account No.", SalesHeader."Sell-to Customer No.");
-    //         GenJournalLine.Validate("Currency Code", SalesInvoiceHeader."Currency Code");
-    //         GenJournalLine.Validate("Payment Method Code", BCWebShopSetup."Payment Method Code");
-    //         GenJournalLine.Validate("Credit Amount", SalesInvoiceHeader."Amount Including VAT");
-    //         GenJournalLine.Validate("Applies-to Doc. Type", GenJournalLine."Applies-to Doc. Type"::Invoice);
-    //         GenJournalLine.Validate("Applies-to Doc. No.", SalesInvoiceHeader."No.");
-    //         GenJournalLine.Validate("Bal. Account Type", GenJournalLine."Bal. Account Type"::"Bank Account");
-    //         GenJournalLine.Validate("Bal. Account No.", BCWebShopSetup."Bal. Account No.");
+            TempSalesInvoiceHeader.CalcFields("Amount Including VAT");
 
-    //         CODEUNIT.Run(CODEUNIT::"Gen. Jnl.-Post Line", GenJournalLine);
-    //     end;
-    // end;
+            JsonObject.Add('postingDate', '2023-01-26');
+            JsonObject.Add('documentType', 'Payment'); // todo - u setup
+            JsonObject.Add('documentNo', CopyStr('PAY-' + TempSalesInvoiceHeader."No.", 1, MaxStrLen(GenJournalLine."Document No.")));
+            JsonObject.Add('accountType', 'Customer'); // todo
+            JsonObject.Add('accountNo', BCWebShopSetup.UserNo);
+            JsonObject.Add('currencyCode', TempSalesInvoiceHeader."Currency Code");
+            JsonObject.Add('paymentMethodCode', BCWebShopSetup."Payment Method Code");
+            JsonObject.Add('creditAmount', TempSalesInvoiceHeader."Amount Including VAT");
+            JsonObject.Add('appliesToDocType', 'Invoice'); // todo
+            JsonObject.Add('appliesToDocNo', TempSalesInvoiceHeader."No.");
+            JsonObject.Add('balAccountType', 'Bank Account'); // todo
+            JsonObject.Add('balAccountNo', BCWebShopSetup."Bal. Account No.");
+            JsonObject.Add('journalTemplateName', 'GENERAL'); // todo
+            JsonObject.Add('journalBatchName', 'CASH'); // todo
+            if GetLastGenJournalLine(BCWebShopSetup, httpClient, LineNo) then
+                LineNo += 1;
+            JsonObject.Add('lineNo', LineNo);
+            JsonObject.WriteTo(Text);
 
-    // local procedure OpenPostedSalesInvoice(var SalesHeader: Record "Sales Header")
-    // var
-    //     SalesInvoiceHeader: Record "Sales Invoice Header";
-    // begin
-    //     if FindPostedSalesInvoice(SalesHeader, SalesInvoiceHeader) then
-    //         Page.Run(Page::"Posted Sales Invoice", SalesInvoiceHeader);
-    // end;
+            httpContent.WriteFrom(Text);
+            httpContent.GetHeaders(httpHeaders);
+            httpHeaders.Clear();
+            httpHeaders.Add('Content-Type', 'application/json');
+            httpRequestMessage.Content := httpContent;
+            httpRequestMessage.SetRequestUri(StrSubstNo(BackEndPostUrlLbl, BCWebShopSetup."Backend Web Service URL"));
+            httpRequestMessage.Method := 'POST';
 
-    // local procedure FindPostedSalesInvoice(var SalesHeader: Record "Sales Header"; var SalesInvoiceHeader: Record "Sales Invoice Header"): Boolean
-    // begin
-    //     // GET SalesInvoiceHeader
-    //     SalesInvoiceHeader.SetRange("Sell-to Customer No.", SalesHeader."Sell-to Customer No.");
-    //     SalesInvoiceHeader.SetRange("Order No.", SalesHeader."No.");
-    //     SalesInvoiceHeader.SetRange("Posting Date", SalesHeader."Posting Date");
-    //     exit(SalesInvoiceHeader.FindFirst());
-    // end;
+            httpClient.Send(httpRequestMessage, HttpResponseMessage);
+            if HttpResponseMessage.IsSuccessStatusCode() then
+                Message('Thank you for shopping with us.')
+            else begin
+                HttpResponseMessage.Content().ReadAs(Text);
+                Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode(), Text);
+            end;
+        end;
+    end;
+
+
+    local procedure GetPostedSalesInvoice(var BCWebShopSetup: Record "BCWeb Shop Setup"; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; httpClient: HttpClient; SalesHeaderNo: Code[20]): Boolean
+    var
+        HttpResponseMessage: HttpResponseMessage;
+        ResponseText: Text;
+        JsonObject: JsonObject;
+        WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
+        BackEndWebShopUrlLbl: Label '%1/postedSalesInvoicesMM?$filter=customerNo eq ''%2'' and orderNo eq ''%3''', Comment = '%1 is Web Shop URL, %2 is customer no., %3 is order no., %4 is posting date';
+    begin
+        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", BCWebShopSetup.UserNo, SalesHeaderNo), HttpResponseMessage);
+        if HttpResponseMessage.IsSuccessStatusCode() then begin
+            HttpResponseMessage.Content().ReadAs(ResponseText);
+            JsonObject.ReadFrom(ResponseText);
+            exit(ParseJsonSalesInvoiceHeader(ResponseText, TempSalesInvoiceHeader));
+        end
+        else
+            Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
+    end;
 
     local procedure ParseResponseSalesHeader(ResponseText: Text; var SalesHeaderNo: Code[20]; var SalesHeaderDocumentType: Text)
     var
@@ -198,7 +222,7 @@ codeunit 50107 "BCPostBuyFromCart"
         SalesHeaderDocumentType := GetFieldValue(JsonObject, 'documentType').AsText();
     end;
 
-    local procedure ParseJson(ResponseText: Text; var PostedSalesHeaderNo: Code[20])
+    local procedure ParseJson(ResponseText: Text; var PostedSalesHeaderNo: Code[20]): Boolean
     var
         JsonObject: JsonObject;
         JsonToken: JsonToken;
@@ -207,12 +231,39 @@ codeunit 50107 "BCPostBuyFromCart"
         JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
         JsonArray := JsonToken.AsArray();
+        if JsonArray.Count = 0 then
+            exit(false)
+        else
+            foreach JsonToken in JsonArray do begin
+                JsonObject := JsonToken.AsObject();
+                PostedSalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(PostedSalesHeaderNo));
+                exit(true);
+            end;
+    end;
 
-        foreach JsonToken in JsonArray do begin
-            JsonObject := JsonToken.AsObject();
-            PostedSalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(PostedSalesHeaderNo));
-            exit;
-        end;
+    local procedure ParseJsonSalesInvoiceHeader(ResponseText: Text; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary): Boolean
+    var
+        JsonObject: JsonObject;
+        JsonToken: JsonToken;
+        JsonArray: JsonArray;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        JsonObject.Get('value', JsonToken);
+        JsonArray := JsonToken.AsArray();
+        if JsonArray.Count = 0 then
+            exit(false)
+        else
+            foreach JsonToken in JsonArray do begin
+                JsonObject := JsonToken.AsObject();
+
+                TempSalesInvoiceHeader.Init();
+                TempSalesInvoiceHeader."No." := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(TempSalesInvoiceHeader."No."));
+                TempSalesInvoiceHeader."Amount Including VAT" := GetFieldValue(JsonObject, 'amountIncludingVAT').AsDecimal();
+                TempSalesInvoiceHeader."Currency Code" := CopyStr(GetFieldValue(JsonObject, 'currencyCode').AsCode(), 1, MaxStrLen(TempSalesInvoiceHeader."Currency Code"));
+                TempSalesInvoiceHeader.Insert();
+
+                exit(true);
+            end;
     end;
 
     local procedure GetFieldValue(var JsonObject: JsonObject; FieldName: Text): JsonValue
@@ -221,5 +272,43 @@ codeunit 50107 "BCPostBuyFromCart"
     begin
         JsonObject.Get(FieldName, JsonToken);
         exit(JsonToken.AsValue());
+    end;
+
+    local procedure GetLastGenJournalLine(var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: HttpClient; var LineNo: Integer): Boolean
+    var
+        HttpResponseMessage: HttpResponseMessage;
+        ResponseText: Text;
+        JsonObject: JsonObject;
+        WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
+        BackEndWebShopUrlLbl: Label '%1/allGenJournalLinesMM?$filter=journalTemplateName eq ''%2'' and journalBatchName eq ''%3''', Comment = '%1 is Web Shop URL, %2 is template name, %3 is batch name';
+    begin
+        // todo
+        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", 'GENERAL', 'CASH'), HttpResponseMessage);
+        if HttpResponseMessage.IsSuccessStatusCode() then begin
+            HttpResponseMessage.Content().ReadAs(ResponseText);
+            JsonObject.ReadFrom(ResponseText);
+            exit(ParseJsonGenJournalLine(ResponseText, LineNo));
+        end
+        else
+            Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
+    end;
+
+    local procedure ParseJsonGenJournalLine(ResponseText: Text; var LineNo: Integer): Boolean
+    var
+        JsonObject: JsonObject;
+        JsonToken: JsonToken;
+        JsonArray: JsonArray;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        JsonObject.Get('value', JsonToken);
+        JsonArray := JsonToken.AsArray();
+        if JsonArray.Count = 0 then
+            exit(false)
+        else
+            foreach JsonToken in JsonArray do begin
+                JsonObject := JsonToken.AsObject();
+                LineNo := GetFieldValue(JsonObject, 'lineNo').AsInteger();
+            end;
+        exit(true);
     end;
 }
