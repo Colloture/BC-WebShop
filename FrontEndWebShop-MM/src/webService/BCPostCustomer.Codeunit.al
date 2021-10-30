@@ -72,8 +72,6 @@ codeunit 50105 "BCPost Customer"
     begin
         JsonObject.Add('name', BCLogIn.Name);
         JsonObject.Add('email', BCLogIn."E-Mail");
-        JsonObject.Add('address', BCLogIn.Address);
-        JsonObject.Add('phone', BCLogIn."Phone No.");
         JsonObject.Add('genBusPostingGroup', 'DOMESTIC');
         JsonObject.Add('customerPostingGroup', 'DOMESTIC');
         JsonObject.Add('paymentTermsCode', '10 DAYS');

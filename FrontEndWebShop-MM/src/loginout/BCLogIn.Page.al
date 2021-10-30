@@ -19,21 +19,11 @@ page 50108 "BCLogIn"
                     ToolTip = 'Specifies the value of the Name field.';
                     NotBlank = true;
                 }
-                field(Address; Rec.Address)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Address field.';
-                }
                 field("E-Mail"; Rec."E-Mail")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Email field.';
                     NotBlank = true;
-                }
-                field("Phone No."; Rec."Phone No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Phone No. field.';
                 }
             }
         }

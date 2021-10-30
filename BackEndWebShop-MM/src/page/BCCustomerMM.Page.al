@@ -22,12 +22,6 @@ page 50111 "BCCustomerMM"
                 field(email; Rec."E-Mail")
                 {
                 }
-                field(address; Rec.Address)
-                {
-                }
-                field(phone; Rec."Phone No.")
-                {
-                }
                 field(genBusPostingGroup; Rec."Gen. Bus. Posting Group")
                 {
                 }

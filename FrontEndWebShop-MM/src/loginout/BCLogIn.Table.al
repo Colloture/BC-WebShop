@@ -10,20 +10,10 @@ table 50106 "BCLogIn"
             DataClassification = CustomerContent;
             Caption = 'Name';
         }
-        field(2; Address; Text[100])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Address';
-        }
         field(3; "E-Mail"; Text[80])
         {
             DataClassification = CustomerContent;
             Caption = 'E-Mail';
-        }
-        field(4; "Phone No."; Text[30])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Phone No.';
         }
     }
 
