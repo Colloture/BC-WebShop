@@ -44,11 +44,6 @@ page 50102 "BCStore Items"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Item Category field.';
                 }
-                field(Image; Rec.Image)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Image field.';
-                }
             }
         }
     }

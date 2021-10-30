@@ -34,7 +34,7 @@ table 50101 "BCStore Items"
             DataClassification = CustomerContent;
             Caption = 'Item Category';
         }
-        field(7; Image; MediaSet)
+        field(7; Image; Media)
         {
             DataClassification = CustomerContent;
             Caption = 'Image';
@@ -47,5 +47,10 @@ table 50101 "BCStore Items"
         {
             Clustered = true;
         }
+    }
+
+    fieldgroups
+    {
+        fieldgroup(Brick; "No.", Description, Inventory, "Unit Price", "Base Unit of Measure", Image) { }
     }
 }
