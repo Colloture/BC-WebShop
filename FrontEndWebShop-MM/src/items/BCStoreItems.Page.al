@@ -121,9 +121,9 @@ page 50102 "BCStore Items"
         BCStoreItems: Record "BCStore Items";
         BCGetItems: Codeunit "BCGet Items";
     begin
-        // BCStoreItems.DeleteAll(); // kada dodajem novi atribut tabeli
-        if BCStoreItems.IsEmpty then
-            BCGetItems.Run();
+        BCStoreItems.DeleteAll(); // kada dodajem novi atribut tabeli
+        // if BCStoreItems.IsEmpty then
+        BCGetItems.Run();
     end;
 
     local procedure AddNewItemToCart(var BCStoreItems: Record "BCStore Items")

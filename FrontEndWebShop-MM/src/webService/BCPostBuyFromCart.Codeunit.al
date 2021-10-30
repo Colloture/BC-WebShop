@@ -7,6 +7,9 @@ codeunit 50107 "BCPostBuyFromCart"
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
         httpClient: httpClient;
+        SalesHeaderNo: Code[20];
+        SalesHeaderDocumentType: Text;
+        PostedSalesHeaderNo: Code[20];
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
@@ -17,9 +20,9 @@ codeunit 50107 "BCPostBuyFromCart"
 
         SetAuthorization(BCWebShopSetup, httpClient);
 
-        CreateOrder(BCWebShopSetup, Rec, httpClient);
+        CreateOrder(BCWebShopSetup, Rec, httpClient, SalesHeaderNo, SalesHeaderDocumentType);
+        GetPostOrder(BCWebShopSetup, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo, httpClient);
 
-        // PostOrder(SalesHeader); -> GET ili POST zahtev za novi PAGE koji ce uraditi POST
         // CreatePayment(SalesHeader);
         // OpenPostedSalesInvoice(SalesHeader);
 
@@ -38,11 +41,9 @@ codeunit 50107 "BCPostBuyFromCart"
         httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
-    local procedure CreateOrder(var BCWebShopSetup: Record "BCWeb Shop Setup"; var BCCart: Record BCCart; httpClient: httpClient)
+    local procedure CreateOrder(var BCWebShopSetup: Record "BCWeb Shop Setup"; var BCCart: Record BCCart; httpClient: httpClient; var SalesHeaderNo: Code[20]; var SalesHeaderDocumentType: Text)
     var
         SalesLineNo: Integer;
-        SalesHeaderNo: Code[20];
-        SalesHeaderDocumentType: Text;
     begin
         PostSalesHeader(BCWebShopSetup, SalesHeaderNo, SalesHeaderDocumentType, httpClient);
 
@@ -123,13 +124,25 @@ codeunit 50107 "BCPostBuyFromCart"
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
-    // local procedure PostOrder(var SalesHeader: Record "Sales Header")
-    // begin
-    //     // GET salesHeader
-    //     SalesHeader.Invoice := true;
-    //     SalesHeader.Ship := true;
-    //     Codeunit.Run(Codeunit::"Sales-Post", SalesHeader);
-    // end;
+    local procedure GetPostOrder(var BCWebShopSetup: Record "BCWeb Shop Setup"; SalesHeaderNo: Code[20]; SalesHeaderDocumentType: Text; var PostedSalesHeaderNo: Code[20]; httpClient: HttpClient)
+    var
+        HttpResponseMessage: HttpResponseMessage;
+        ResponseText: Text;
+        JsonObject: JsonObject;
+        WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
+        BackEndWebShopUrlLbl: Label '%1/postingSalesOrdersMM?$filter=documentType eq ''%2'' and no eq ''%3''', Comment = '%1 is Web Shop URL, %2 is document type, %3 is document no.';
+    begin
+
+        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", SalesHeaderDocumentType, SalesHeaderNo), HttpResponseMessage);
+        if HttpResponseMessage.IsSuccessStatusCode() then begin
+            HttpResponseMessage.Content().ReadAs(ResponseText);
+            JsonObject.ReadFrom(ResponseText);
+            ParseJson(ResponseText, PostedSalesHeaderNo);
+            Message('%1', PostedSalesHeaderNo);
+        end
+        else
+            Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
+    end;
 
     // local procedure CreatePayment(var SalesHeader: Record "Sales Header")
     // var
@@ -183,6 +196,23 @@ codeunit 50107 "BCPostBuyFromCart"
         JsonObject.ReadFrom(ResponseText);
         SalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'no').AsCode(), 1, MaxStrLen(SalesHeaderNo));
         SalesHeaderDocumentType := GetFieldValue(JsonObject, 'documentType').AsText();
+    end;
+
+    local procedure ParseJson(ResponseText: Text; var PostedSalesHeaderNo: Code[20])
+    var
+        JsonObject: JsonObject;
+        JsonToken: JsonToken;
+        JsonArray: JsonArray;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        JsonObject.Get('value', JsonToken);
+        JsonArray := JsonToken.AsArray();
+
+        foreach JsonToken in JsonArray do begin
+            JsonObject := JsonToken.AsObject();
+            PostedSalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(PostedSalesHeaderNo));
+            exit;
+        end;
     end;
 
     local procedure GetFieldValue(var JsonObject: JsonObject; FieldName: Text): JsonValue
