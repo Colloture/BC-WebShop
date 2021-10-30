@@ -37,34 +37,44 @@ page 50110 "BCItem-MM"
                 field(itemCategoryCode; Rec."Item Category Code")
                 {
                 }
-                field(image; GetItemImage(Rec))
+                field(image; Image)
+                {
+                }
+                field(mime; Mime)
                 {
                 }
             }
         }
     }
 
-    local procedure GetItemImage(var Item: Record Item): Text
+    trigger OnAfterGetCurrRecord()
+    begin
+        GetItemImage(Rec);
+    end;
+
+    var
+        Mime: Text;
+        Image: Text;
+
+    local procedure GetItemImage(var Item: Record Item)
     var
         TenantMedia: Record "Tenant Media";
         Base64Convert: Codeunit "Base64 Convert";
         MediaInStream: InStream;
-        MediaJsonObject: JsonObject;
-        MediaJsonToken: JsonToken;
     begin
-        if Item.Picture.Count = 0 then
-            exit('');
+        if Item.Picture.Count = 0 then begin
+            Mime := '';
+            Image := '';
+            exit;
+        end;
 
-        TenantMedia.Get(Item.Picture.Item(1)); // zelimo samo prvu sliku 
-        TenantMedia.CalcFields(Content); // stvarno preuzimanje slike iz baze
+        TenantMedia.Get(Item.Picture.Item(1));
+        TenantMedia.CalcFields(Content);
 
-        if not TenantMedia.Content.HasValue then
-            exit('');
-
-        TenantMedia.Content.CreateInStream(MediaInStream, TextEncoding::Windows);
-        MediaJsonObject.Add('image', Base64Convert.ToBase64(MediaInStream)); // "cudna slova" prilagodjava json-u
-        MediaJsonObject.SelectToken('image', MediaJsonToken); // uzimamo vrednost 
-
-        exit(MediaJsonToken.AsValue().AsText());
+        if TenantMedia.Content.HasValue() then begin
+            TenantMedia.Content.CreateInStream(MediaInStream, TextEncoding::Windows);
+            Image := Base64Convert.ToBase64(MediaInStream);
+            Mime := TenantMedia."Mime Type";
+        end;
     end;
 }

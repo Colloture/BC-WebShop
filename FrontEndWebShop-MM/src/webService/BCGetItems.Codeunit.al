@@ -37,11 +37,17 @@ codeunit 50101 "BCGet Items"
 
     local procedure ParseJson(ResponseText: Text; var BCStoreItems: Record "BCStore Items")
     var
+        Base64Convert: Codeunit "Base64 Convert";
+        TempBlob: Codeunit "Temp Blob";
         JsonObject: JsonObject;
         JsonToken: JsonToken;
         JsonArray: JsonArray;
         ItemJsonToken: JsonToken;
         ItemJsonObject: JsonObject;
+        ImageDataBase64: Text;
+        ImageDataDecoded: Text;
+        InStream: InStream;
+        outStream: OutStream;
     begin
         JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
@@ -57,8 +63,17 @@ codeunit 50101 "BCGet Items"
             BCStoreItems.Inventory := GetFieldValue(ItemJsonObject, 'inventory').AsDecimal();
             BCStoreItems."Base Unit of Measure" := CopyStr(GetFieldValue(ItemJsonObject, 'baseUnitOfMeasure').AsCode(), 1, MaxStrLen(BCStoreItems."Base Unit of Measure"));
             BCStoreItems."Item Category" := CopyStr(GetFieldValue(ItemJsonObject, 'itemCategoryCode').AsCode(), 1, MaxStrLen(BCStoreItems."Item Category"));
-            // TODO - add picture
+
+            // TODO - fix this part with images
+            // imageDataBase64 := GetFieldValue(ItemJsonObject, 'image').AsText();
+            // ImageDataDecoded := Base64Convert.FromBase64(ImageDataBase64);
+            // TempBlob.CreateOutStream(outStream);
+            // outStream.Write(ImageDataDecoded);
+            // TempBlob.CreateInStream(InStream);
+            // BCStoreItems.Image.ImportStream(InStream, 'ItemImage.jpg', GetFieldValue(ItemJsonObject, 'mime').AsText());
+
             BCStoreItems.Insert();
+
         end;
     end;
 
