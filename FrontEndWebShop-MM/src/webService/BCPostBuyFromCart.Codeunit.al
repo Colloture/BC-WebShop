@@ -84,6 +84,15 @@ codeunit 50107 "BCPostBuyFromCart"
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
+    local procedure ParseResponseSalesHeader(ResponseText: Text; var SalesHeaderNo: Code[20]; var SalesHeaderDocumentType: Text)
+    var
+        JsonObject: JsonObject;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        SalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'no').AsCode(), 1, MaxStrLen(SalesHeaderNo));
+        SalesHeaderDocumentType := GetFieldValue(JsonObject, 'documentType').AsText();
+    end;
+
     local procedure PostSalesLine(var BCWebShopSetup: Record "BCWeb Shop Setup"; SalesHeaderNo: Code[20]; SalesHeaderDocumentType: Text; LineNo: Integer; var BCCart: Record BCCart; httpClient: httpClient)
     var
         Text: Text;
@@ -192,7 +201,6 @@ codeunit 50107 "BCPostBuyFromCart"
         end;
     end;
 
-
     local procedure GetPostedSalesInvoice(var BCWebShopSetup: Record "BCWeb Shop Setup"; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; httpClient: HttpClient; SalesHeaderNo: Code[20]): Boolean
     var
         HttpResponseMessage: HttpResponseMessage;
@@ -209,34 +217,6 @@ codeunit 50107 "BCPostBuyFromCart"
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
-    end;
-
-    local procedure ParseResponseSalesHeader(ResponseText: Text; var SalesHeaderNo: Code[20]; var SalesHeaderDocumentType: Text)
-    var
-        JsonObject: JsonObject;
-    begin
-        JsonObject.ReadFrom(ResponseText);
-        SalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'no').AsCode(), 1, MaxStrLen(SalesHeaderNo));
-        SalesHeaderDocumentType := GetFieldValue(JsonObject, 'documentType').AsText();
-    end;
-
-    local procedure ParseJson(ResponseText: Text; var PostedSalesHeaderNo: Code[20]): Boolean
-    var
-        JsonObject: JsonObject;
-        JsonToken: JsonToken;
-        JsonArray: JsonArray;
-    begin
-        JsonObject.ReadFrom(ResponseText);
-        JsonObject.Get('value', JsonToken);
-        JsonArray := JsonToken.AsArray();
-        if JsonArray.Count = 0 then
-            exit(false)
-        else
-            foreach JsonToken in JsonArray do begin
-                JsonObject := JsonToken.AsObject();
-                PostedSalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(PostedSalesHeaderNo));
-                exit(true);
-            end;
     end;
 
     local procedure ParseJsonSalesInvoiceHeader(ResponseText: Text; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary): Boolean
@@ -260,6 +240,25 @@ codeunit 50107 "BCPostBuyFromCart"
                 TempSalesInvoiceHeader."Currency Code" := CopyStr(GetFieldValue(JsonObject, 'currencyCode').AsCode(), 1, MaxStrLen(TempSalesInvoiceHeader."Currency Code"));
                 TempSalesInvoiceHeader.Insert();
 
+                exit(true);
+            end;
+    end;
+
+    local procedure ParseJson(ResponseText: Text; var PostedSalesHeaderNo: Code[20]): Boolean
+    var
+        JsonObject: JsonObject;
+        JsonToken: JsonToken;
+        JsonArray: JsonArray;
+    begin
+        JsonObject.ReadFrom(ResponseText);
+        JsonObject.Get('value', JsonToken);
+        JsonArray := JsonToken.AsArray();
+        if JsonArray.Count = 0 then
+            exit(false)
+        else
+            foreach JsonToken in JsonArray do begin
+                JsonObject := JsonToken.AsObject();
+                PostedSalesHeaderNo := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(PostedSalesHeaderNo));
                 exit(true);
             end;
     end;

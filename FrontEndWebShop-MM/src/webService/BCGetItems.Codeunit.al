@@ -37,17 +37,17 @@ codeunit 50101 "BCGet Items"
 
     local procedure ParseJson(ResponseText: Text; var BCStoreItems: Record "BCStore Items")
     var
-        Base64Convert: Codeunit "Base64 Convert";
-        TempBlob: Codeunit "Temp Blob";
+        // Base64Convert: Codeunit "Base64 Convert";
+        // TempBlob: Codeunit "Temp Blob";
         JsonObject: JsonObject;
         JsonToken: JsonToken;
         JsonArray: JsonArray;
         ItemJsonToken: JsonToken;
         ItemJsonObject: JsonObject;
-        ImageDataBase64: Text;
-        ImageDataDecoded: Text;
-        InStream: InStream;
-        outStream: OutStream;
+    // ImageDataBase64: Text;
+    // ImageDataDecoded: Text;
+    // InStream: InStream;
+    // outStream: OutStream;
     begin
         JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
