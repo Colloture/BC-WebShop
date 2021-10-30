@@ -8,7 +8,6 @@ page 50103 "BCWeb Shop RC"
     {
         area(RoleCenter)
         {
-            // TODO - add part with photo
             part(HeadlineTxt; "BCWeb Shop Headline")
             {
                 ApplicationArea = All;
@@ -56,13 +55,6 @@ page 50103 "BCWeb Shop RC"
                 Caption = 'All Store Items';
                 ToolTip = 'Executes the All Store Items action.';
                 RunObject = page "BCStore Items";
-            }
-            action(RequestNew)
-            {
-                ApplicationArea = All;
-                Caption = 'Request New Item';
-                ToolTip = 'Executes the Request New Item action.';
-                RunObject = page "BCStore Items"; // TODO - link ka Request new-u stranici
             }
         }
     }

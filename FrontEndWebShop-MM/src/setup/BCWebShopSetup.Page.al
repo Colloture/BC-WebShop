@@ -40,43 +40,73 @@ page 50101 "BCWeb Shop Setup"
                         ApplicationArea = All;
                     }
                 }
-                group(LoggedIn) // TODO - nema potrebe da se ovo vidi na Page-u, trenutno je tu radi testiranja
-                {
-                    Caption = 'Logged In';
+            }
+            group(LoggedIn)
+            {
+                Caption = 'Logged In User';
 
-                    field(UserNo; Rec.UserNo)
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                        ToolTip = 'Specifies the value of the User No. of logged in user.';
-                    }
-                    field(LoggedInUsername; Rec.LoggedInUsername)
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                        ToolTip = 'Specifies the value of the Username of logged in user.';
-                    }
-                    field(LoggedInEmail; Rec.LoggedInEmail)
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                        ToolTip = 'Specifies the value of the Email of logged in user.';
-                    }
+                field(UserNo; Rec.UserNo)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    ToolTip = 'Specifies the value of the User No. of logged in user.';
                 }
-                group(GenJournalLine)
+                field(LoggedInUsername; Rec.LoggedInUsername)
                 {
-                    Caption = 'Gen. Journal Line Settings';
+                    ApplicationArea = All;
+                    Editable = false;
+                    ToolTip = 'Specifies the value of the Username of logged in user.';
+                }
+                field(LoggedInEmail; Rec.LoggedInEmail)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    ToolTip = 'Specifies the value of the Email of logged in user.';
+                }
+            }
+            group(GenJournalLine)
+            {
+                Caption = 'Gen. Journal Line Settings';
 
-                    field("Payment Method Code"; Rec."Payment Method Code")
-                    {
-                        ApplicationArea = All;
-                        ToolTip = 'Specifies the value of the Payment Method Code field.';
-                    }
-                    field("Bal. Account No."; Rec."Bal. Account No.")
-                    {
-                        ApplicationArea = All;
-                        ToolTip = 'Specifies the value of the Bal. Account No. field.';
-                    }
+                field("Payment Method Code"; Rec."Payment Method Code")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Payment Method Code field.';
+                }
+                field("Document Type"; Rec."Document Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Document Type field.';
+                }
+                field("Bal. Account Type"; Rec."Bal. Account Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Bal. Account Type field.';
+                }
+                field("Bal. Account No."; Rec."Bal. Account No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Bal. Account No. field.';
+                }
+                field("Account Type"; Rec."Account Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Account Type field.';
+                }
+                field("Applies To Doc. Type"; "Applies To Doc. Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Applies To Doc. Type field.';
+                }
+                field("Journal Template Name"; Rec."Journal Template Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Journal Template Name field.';
+                }
+                field("Journal Batch Name"; Rec."Journal Batch Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Journal Batch Name field.';
                 }
             }
         }

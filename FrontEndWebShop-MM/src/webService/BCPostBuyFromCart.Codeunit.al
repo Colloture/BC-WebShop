@@ -23,8 +23,6 @@ codeunit 50107 "BCPostBuyFromCart"
         GetPostOrder(BCWebShopSetup, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo, httpClient);
         PostCreatePayment(BCWebShopSetup, httpClient, SalesHeaderNo);
 
-        // OpenPostedSalesInvoice(SalesHeader); -> Poruka da je proknjizeno
-
         Rec.DeleteAll();
     end;
 
@@ -158,19 +156,19 @@ codeunit 50107 "BCPostBuyFromCart"
             TempSalesInvoiceHeader.CalcFields("Amount Including VAT");
 
             JsonObject.Add('postingDate', '2023-01-26');
-            JsonObject.Add('documentType', 'Payment'); // todo - u setup
+            JsonObject.Add('documentType', BCWebShopSetup."Document Type");
             JsonObject.Add('documentNo', CopyStr('PAY-' + TempSalesInvoiceHeader."No.", 1, MaxStrLen(GenJournalLine."Document No.")));
-            JsonObject.Add('accountType', 'Customer'); // todo
+            JsonObject.Add('accountType', BCWebShopSetup."Account Type");
             JsonObject.Add('accountNo', BCWebShopSetup.UserNo);
             JsonObject.Add('currencyCode', TempSalesInvoiceHeader."Currency Code");
             JsonObject.Add('paymentMethodCode', BCWebShopSetup."Payment Method Code");
             JsonObject.Add('creditAmount', TempSalesInvoiceHeader."Amount Including VAT");
-            JsonObject.Add('appliesToDocType', 'Invoice'); // todo
+            JsonObject.Add('appliesToDocType', BCWebShopSetup."Applies To Doc. Type");
             JsonObject.Add('appliesToDocNo', TempSalesInvoiceHeader."No.");
-            JsonObject.Add('balAccountType', 'Bank Account'); // todo
+            JsonObject.Add('balAccountType', BCWebShopSetup."Bal. Account Type");
             JsonObject.Add('balAccountNo', BCWebShopSetup."Bal. Account No.");
-            JsonObject.Add('journalTemplateName', 'GENERAL'); // todo
-            JsonObject.Add('journalBatchName', 'CASH'); // todo
+            JsonObject.Add('journalTemplateName', BCWebShopSetup."Journal Template Name");
+            JsonObject.Add('journalBatchName', BCWebShopSetup."Journal Batch Name");
             if GetLastGenJournalLine(BCWebShopSetup, httpClient, LineNo) then
                 LineNo += 1;
             JsonObject.Add('lineNo', LineNo);
@@ -282,8 +280,7 @@ codeunit 50107 "BCPostBuyFromCart"
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
         BackEndWebShopUrlLbl: Label '%1/allGenJournalLinesMM?$filter=journalTemplateName eq ''%2'' and journalBatchName eq ''%3''', Comment = '%1 is Web Shop URL, %2 is template name, %3 is batch name';
     begin
-        // todo
-        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", 'GENERAL', 'CASH'), HttpResponseMessage);
+        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", BCWebShopSetup."Journal Template Name", BCWebShopSetup."Journal Batch Name"), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             JsonObject.ReadFrom(ResponseText);

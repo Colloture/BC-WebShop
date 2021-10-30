@@ -1,6 +1,5 @@
 codeunit 50103 "BCPasswordEncryption"
 {
-    // TODO - gde pozvati?
     SingleInstance = true;
 
     trigger OnRun()

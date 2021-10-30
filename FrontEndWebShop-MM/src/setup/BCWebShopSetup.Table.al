@@ -21,7 +21,6 @@ table 50100 "BCWeb Shop Setup"
         }
         field(4; "Backend Password"; Text[100])
         {
-            // TODO
             DataClassification = EndUserIdentifiableInformation;
             ExtendedDatatype = Masked;
             Caption = 'Backend Password';
@@ -50,6 +49,36 @@ table 50100 "BCWeb Shop Setup"
         {
             DataClassification = SystemMetadata;
             Caption = 'Bal. Account No.';
+        }
+        field(10; "Document Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Document Type';
+        }
+        field(11; "Account Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Account Type';
+        }
+        field(12; "Applies To Doc. Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Applies To Doc. Type';
+        }
+        field(13; "Bal. Account Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Bal. Account Type';
+        }
+        field(14; "Journal Template Name"; Code[10])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Journal Template Name';
+        }
+        field(15; "Journal Batch Name"; Code[10])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Journal Batch Name';
         }
     }
 

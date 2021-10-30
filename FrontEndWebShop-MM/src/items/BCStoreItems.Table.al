@@ -34,7 +34,11 @@ table 50101 "BCStore Items"
             DataClassification = CustomerContent;
             Caption = 'Item Category';
         }
-        // TODO - Add photo
+        field(7; Image; MediaSet)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Image';
+        }
     }
 
     keys

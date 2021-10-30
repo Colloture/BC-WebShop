@@ -44,7 +44,11 @@ page 50102 "BCStore Items"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Item Category field.';
                 }
-                // TODO - add photo 
+                field(Image; Rec.Image)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Image field.';
+                }
             }
         }
     }
@@ -121,8 +125,7 @@ page 50102 "BCStore Items"
         BCStoreItems: Record "BCStore Items";
         BCGetItems: Codeunit "BCGet Items";
     begin
-        BCStoreItems.DeleteAll(); // kada dodajem novi atribut tabeli
-        // if BCStoreItems.IsEmpty then
+        BCStoreItems.DeleteAll();
         BCGetItems.Run();
     end;
 
