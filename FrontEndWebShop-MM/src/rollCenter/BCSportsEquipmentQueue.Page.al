@@ -38,6 +38,24 @@ page 50104 "BCSports Equipment Queue"
                     DrillDownPageId = "BCStore Items";
                     ToolTip = 'Specifies number of Glasses.';
                 }
+                field(Bags; Rec.Bags)
+                {
+                    ApplicationArea = All;
+                    DrillDownPageId = "BCStore Items";
+                    ToolTip = 'Specifies number of Bags.';
+                }
+                field(Jerseys; Rec.Jerseys)
+                {
+                    ApplicationArea = All;
+                    DrillDownPageId = "BCStore Items";
+                    ToolTip = 'Specifies number of Jerseys.';
+                }
+                field(Shoes; Rec.Shoes)
+                {
+                    ApplicationArea = All;
+                    DrillDownPageId = "BCStore Items";
+                    ToolTip = 'Specifies number of Shoes.';
+                }
                 field(Other; Rec.Other)
                 {
                     ApplicationArea = All;

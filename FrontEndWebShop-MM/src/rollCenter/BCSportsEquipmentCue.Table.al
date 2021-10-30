@@ -40,7 +40,25 @@ table 50102 "BCSports Equipment Cue"
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('GLASSES')));
         }
-        field(7; Other; Integer)
+        field(7; Jerseys; Integer)
+        {
+            Caption = 'Jerseys';
+            FieldClass = FlowField;
+            CalcFormula = count("BCStore Items" where("Item Category" = const('JERSEY')));
+        }
+        field(8; Shoes; Integer)
+        {
+            Caption = 'Shoes';
+            FieldClass = FlowField;
+            CalcFormula = count("BCStore Items" where("Item Category" = const('SHOES')));
+        }
+        field(9; Bags; Integer)
+        {
+            Caption = 'Bags';
+            FieldClass = FlowField;
+            CalcFormula = count("BCStore Items" where("Item Category" = const('BAG')));
+        }
+        field(10; Other; Integer)
         {
             Caption = 'Other';
             FieldClass = FlowField;

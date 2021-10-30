@@ -15,7 +15,7 @@ page 50103 "BCWeb Shop RC"
 
             group(General)
             {
-                part(RetailQueue; "BCSports Equipment Queue")
+                part(SportsEquipmentQueue; "BCSports Equipment Queue")
                 {
                     ApplicationArea = All;
                 }
