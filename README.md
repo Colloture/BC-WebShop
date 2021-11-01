@@ -21,7 +21,7 @@ Endpoints:
 ## Frontend
 http://bcv18-5-pr2021/BC
 
-![rollCenter](https://user-images.githubusercontent.com/48223190/139646069-845a9fde-7939-43d3-a24f-30c510173564.png)
-![storeItesm](https://user-images.githubusercontent.com/48223190/139646073-c0a1fc87-6372-402b-9a00-085ffe7f118f.png)
-![cart](https://user-images.githubusercontent.com/48223190/139646063-02588074-1779-4c5a-9972-e3b00ac11e63.png)
-![favorites](https://user-images.githubusercontent.com/48223190/139646066-3e2b6cc0-c5b9-433f-9bc4-2bb845bbacc6.png)
+![rollCenter](./screenshots/rollCenter.png)
+![storeItesm](./screenshots/storeItesm.png)
+![cart](./screenshots/cart.png)
+![favorites](./screenshots/favorites.png)
