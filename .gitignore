@@ -1,3 +1,5 @@
 *.app
 */.vscode/*
 .alpackages/*
+setup.txt
+screenshots/webShopSetup.*
