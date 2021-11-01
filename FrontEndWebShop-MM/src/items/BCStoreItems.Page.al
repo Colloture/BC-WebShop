@@ -5,6 +5,7 @@ page 50102 "BCStore Items"
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = "BCStore Items";
+    SourceTableView = where(Inventory = filter(> 0));
     Editable = false;
 
     layout
@@ -24,20 +25,10 @@ page 50102 "BCStore Items"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
-                field(Inventory; Rec.Inventory)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Inventory field.';
-                }
                 field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Unit Price field.';
-                }
-                field("Base Unit of Measure"; Rec."Base Unit of Measure")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Base Unit of Measure field.';
                 }
                 field("Item Category"; Rec."Item Category")
                 {

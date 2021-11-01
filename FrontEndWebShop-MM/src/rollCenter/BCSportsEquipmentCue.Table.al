@@ -16,49 +16,43 @@ table 50102 "BCSports Equipment Cue"
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items");
         }
-        field(3; "Total No. of Items"; Decimal)
-        {
-            Caption = 'No. of All Items in Inventory';
-            FieldClass = FlowField;
-            CalcFormula = sum("BCStore Items".Inventory);
-        }
-        field(4; Balls; Integer)
+        field(3; Balls; Integer)
         {
             Caption = 'Balls';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('BALL')));
         }
-        field(5; Rackets; Integer)
+        field(4; Rackets; Integer)
         {
             Caption = 'Rackets';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('RACKET')));
         }
-        field(6; Glasses; Integer)
+        field(5; Glasses; Integer)
         {
             Caption = 'Glasses';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('GLASSES')));
         }
-        field(7; Jerseys; Integer)
+        field(6; Jerseys; Integer)
         {
             Caption = 'Jerseys';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('JERSEY')));
         }
-        field(8; Shoes; Integer)
+        field(7; Shoes; Integer)
         {
             Caption = 'Shoes';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('SHOES')));
         }
-        field(9; Bags; Integer)
+        field(8; Bags; Integer)
         {
             Caption = 'Bags';
             FieldClass = FlowField;
             CalcFormula = count("BCStore Items" where("Item Category" = const('BAG')));
         }
-        field(10; Other; Integer)
+        field(9; Other; Integer)
         {
             Caption = 'Other';
             FieldClass = FlowField;

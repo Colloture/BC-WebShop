@@ -62,12 +62,6 @@ page 50104 "BCSports Equipment Queue"
                     DrillDownPageId = "BCStore Items";
                     ToolTip = 'Specifies number of Other items.';
                 }
-                field("Total No. of Items"; Rec."Total No. of Items")
-                {
-                    ToolTip = 'Specifies Total No. of Items in Inventory.';
-                    ApplicationArea = All;
-                    DrillDownPageId = "BCStore Items";
-                }
             }
         }
     }

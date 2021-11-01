@@ -44,10 +44,16 @@ table 50107 "BCCart"
             DataClassification = CustomerContent;
             Caption = 'Base Unit of Measure';
         }
-        field(9; TotalAmount; Decimal)
+        field(9; Amount; Decimal)
         {
             DataClassification = CustomerContent;
-            Caption = 'Total Amount';
+            Caption = 'Amount';
+        }
+        field(10; TotalAmount; Decimal)
+        {
+            Caption = 'Total Amount Excl. VAT';
+            FieldClass = FlowField;
+            CalcFormula = sum(BCCart.Amount where(Username = field(Username), Email = field(Email)));
         }
     }
 

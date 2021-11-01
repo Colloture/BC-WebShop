@@ -64,9 +64,16 @@ page 50108 "BCLogIn"
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername <> '') and (BCWebShopSetup.LoggedInEmail <> '') then begin
+            Rec.Init();
+            Rec.Name := BCWebShopSetup.LoggedInUsername;
+            Rec."E-Mail" := BCWebShopSetup.LoggedInEmail;
+            Rec.Insert();
             Message('You''re already logged in.');
             exit;
         end;
+
+        Rec.Init();
+        Rec.Insert();
         VisibleAction := true;
     end;
 

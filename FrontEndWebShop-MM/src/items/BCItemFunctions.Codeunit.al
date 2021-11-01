@@ -4,6 +4,7 @@ codeunit 50108 "BCItemFunctions"
     var
         BCCart: Record BCCart;
         BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCUserInformationCue: Record "BCUser Information Cue";
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
@@ -19,7 +20,7 @@ codeunit 50108 "BCItemFunctions"
         if not BCCart.IsEmpty then begin
             BCCart.FindFirst();
             BCCart.Quantity += 1;
-            BCCart.TotalAmount += BCStoreItems."Unit Price";
+            BCCart.Amount += BCStoreItems."Unit Price";
             BCCart.Modify();
         end
         else begin
@@ -32,11 +33,18 @@ codeunit 50108 "BCItemFunctions"
             BCCart."Unit Price" := BCStoreItems."Unit Price";
             BCCart.Quantity := 1;
             BCCart."Base Unit of Measure" := BCStoreItems."Base Unit of Measure";
-            BCCart.TotalAmount := BCStoreItems."Unit Price";
+            BCCart.Amount := BCStoreItems."Unit Price";
             BCCart.Insert();
         end;
 
         Message('New Item added to the Cart.');
+
+        BCUserInformationCue.SetRange(Username, BCCart.Username);
+        BCUserInformationCue.SetRange(Email, BCCart.Email);
+        BCUserInformationCue.FindFirst();
+        BCUserInformationCue.Cart += 1;
+        BCUserInformationCue.CartValue := BCCart.TotalAmount;
+        BCUserInformationCue.Modify();
     end;
 
     procedure OpenYourCart()
@@ -56,6 +64,7 @@ codeunit 50108 "BCItemFunctions"
     var
         BCFavorites: Record BCFavorites;
         BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCUserInformationCue: Record "BCUser Information Cue";
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
@@ -80,6 +89,12 @@ codeunit 50108 "BCItemFunctions"
             BCFavorites.Insert();
 
             Message('New Item added to the Favorites.');
+
+            BCUserInformationCue.SetRange(Username, BCFavorites.Username);
+            BCUserInformationCue.SetRange(Email, BCFavorites.Email);
+            BCUserInformationCue.FindFirst();
+            BCUserInformationCue.Favorites += 1;
+            BCUserInformationCue.Modify();
         end;
     end;
 

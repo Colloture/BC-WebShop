@@ -14,16 +14,6 @@ page 50111 "BCFavorites"
         {
             repeater(General)
             {
-                field(Username; Rec.Username)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Username field.';
-                }
-                field(Email; Rec.Email)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Email field.';
-                }
                 field("Item No."; Rec."Item No.")
                 {
                     ApplicationArea = All;
@@ -43,16 +33,6 @@ page 50111 "BCFavorites"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Unit Price field.';
-                }
-                field("Base Unit of Measure"; Rec."Base Unit of Measure")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Base Unit of Measure field.';
-                }
-                field(Inventory; Rec.Inventory)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Inventory field.';
                 }
             }
         }

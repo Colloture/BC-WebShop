@@ -14,16 +14,6 @@ page 50110 "BCCart"
         {
             repeater(General)
             {
-                field(Username; Rec.Username)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Username field.';
-                }
-                field(Email; Rec.Email)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Email field.';
-                }
                 field("Item No."; Rec."Item No.")
                 {
                     ApplicationArea = All;
@@ -54,10 +44,18 @@ page 50110 "BCCart"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Base Unit of Measure field.';
                 }
-                field(TotalAmount; Rec.TotalAmount)
+                field(Amount; Rec.Amount)
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the TotalAmount field.';
+                    ToolTip = 'Specifies the value of the Amount field.';
+                }
+            }
+            group(Totals)
+            {
+                field(Total; TotalAmount)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Total Amount field.';
                 }
             }
         }
@@ -67,6 +65,60 @@ page 50110 "BCCart"
     {
         area(Processing)
         {
+            action(IncQuantity)
+            {
+                ApplicationArea = All;
+                Caption = 'Increase Quantity';
+                ToolTip = 'Executes the Increase Quantity action.';
+                Image = Add;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    BCUserInformationCue: Record "BCUser Information Cue";
+                begin
+                    Rec.Quantity += 1;
+                    Rec.Amount += Rec."Unit Price";
+                    Rec.TotalAmount += Rec."Unit Price";
+                    Rec.Modify();
+
+                    BCUserInformationCue.SetRange(Username, Rec.Username);
+                    BCUserInformationCue.SetRange(Email, Rec.Email);
+                    BCUserInformationCue.FindFirst();
+                    BCUserInformationCue.CartValue := Rec.TotalAmount;
+                    BCUserInformationCue.Modify();
+                end;
+            }
+            action(DecQuantity)
+            {
+                ApplicationArea = All;
+                Caption = 'Decrease Quantity';
+                ToolTip = 'Executes the Decrease Quantity action.';
+                Image = AdjustEntries;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    BCUserInformationCue: Record "BCUser Information Cue";
+                begin
+                    Rec.Quantity -= 1;
+                    Rec.Amount -= Rec."Unit Price";
+                    Rec.TotalAmount -= Rec."Unit Price";
+                    Rec.Modify();
+                    if Rec.Quantity = 0 then
+                        Rec.Delete();
+
+                    BCUserInformationCue.SetRange(Username, Rec.Username);
+                    BCUserInformationCue.SetRange(Email, Rec.Email);
+                    BCUserInformationCue.FindFirst();
+                    BCUserInformationCue.CartValue := Rec.TotalAmount;
+                    BCUserInformationCue.Modify();
+                end;
+            }
             action(Buy)
             {
                 ApplicationArea = All;
@@ -81,5 +133,4 @@ page 50110 "BCCart"
             }
         }
     }
-
 }

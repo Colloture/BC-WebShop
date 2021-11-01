@@ -36,7 +36,7 @@ table 50103 "BCUser Information Cue"
         {
             Caption = 'Value of Items in Cart';
             FieldClass = FlowField;
-            CalcFormula = sum(BCCart.TotalAmount where(Username = field(Username), Email = field(Email)));
+            CalcFormula = sum(BCCart.Amount where(Username = field(Username), Email = field(Email)));
         }
     }
     keys
