@@ -4,6 +4,7 @@ codeunit 50101 "BCGet Items"
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
         BCStoreItems: Record "BCStore Items";
+        BCAuthorization: Codeunit BCAuthorization;
         httpClient: httpClient;
         HttpResponseMessage: HttpResponseMessage;
         ResponseText: Text;
@@ -12,7 +13,7 @@ codeunit 50101 "BCGet Items"
     begin
         BCWebShopSetup.Get();
 
-        SetAuthorization(BCWebShopSetup, httpClient);
+        BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
 
         httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL"), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
@@ -21,18 +22,6 @@ codeunit 50101 "BCGet Items"
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
-    end;
-
-    local procedure SetAuthorization(var BCWebShopSetup: Record "BCWeb Shop Setup"; var httpClient: httpClient)
-    var
-        Base64Convert: Codeunit "Base64 Convert";
-        AuthString: Text;
-        AuthLbl: Label 'Basic %1', Comment = '%1 is Auth String';
-        UserPwdTok: Label '%1:%2', Comment = '%1 is Username, %2 is Password';
-    begin
-        AuthString := StrSubstNo(UserPwdTok, BCWebShopSetup."Backend Username", BCWebShopSetup."Backend Password");
-        AuthString := Base64Convert.ToBase64(AuthString);
-        httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
     local procedure ParseJson(ResponseText: Text; var BCStoreItems: Record "BCStore Items")
@@ -60,7 +49,6 @@ codeunit 50101 "BCGet Items"
             GetItemImage(BCStoreItems, ItemJsonObject);
 
             BCStoreItems.Insert();
-
         end;
     end;
 
@@ -75,7 +63,7 @@ codeunit 50101 "BCGet Items"
     local procedure GetItemImage(var BCStoreItems: Record "BCStore Items"; ItemJsonObject: JsonObject)
     var
         Base64Convert: Codeunit "Base64 Convert";
-        tempBlob: Codeunit "Temp Blob";
+        TempBlob: Codeunit "Temp Blob";
         ImageDataBase64: Text;
         Mime: Text;
         InStream: InStream;
@@ -83,6 +71,9 @@ codeunit 50101 "BCGet Items"
     begin
         TempBlob.CreateOutStream(OutStream);
         ImageDataBase64 := GetFieldValue(ItemJsonObject, 'image').AsText();
+        if ImageDataBase64 = '' then
+            exit;
+
         Base64Convert.FromBase64(ImageDataBase64, OutStream);
         TempBlob.CreateInStream(InStream);
         Mime := GetFieldValue(ItemJsonObject, 'mime').AsText();

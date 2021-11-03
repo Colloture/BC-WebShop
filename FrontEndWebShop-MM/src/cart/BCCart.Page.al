@@ -76,19 +76,8 @@ page 50110 "BCCart"
                 PromotedCategory = Process;
 
                 trigger OnAction()
-                var
-                    BCUserInformationCue: Record "BCUser Information Cue";
                 begin
-                    Rec.Quantity += 1;
-                    Rec.Amount += Rec."Unit Price";
-                    Rec.TotalAmount += Rec."Unit Price";
-                    Rec.Modify();
-
-                    BCUserInformationCue.SetRange(Username, Rec.Username);
-                    BCUserInformationCue.SetRange(Email, Rec.Email);
-                    BCUserInformationCue.FindFirst();
-                    BCUserInformationCue.CartValue := Rec.TotalAmount;
-                    BCUserInformationCue.Modify();
+                    IncreaseQuantity();
                 end;
             }
             action(DecQuantity)
@@ -102,21 +91,8 @@ page 50110 "BCCart"
                 PromotedCategory = Process;
 
                 trigger OnAction()
-                var
-                    BCUserInformationCue: Record "BCUser Information Cue";
                 begin
-                    Rec.Quantity -= 1;
-                    Rec.Amount -= Rec."Unit Price";
-                    Rec.TotalAmount -= Rec."Unit Price";
-                    Rec.Modify();
-                    if Rec.Quantity = 0 then
-                        Rec.Delete();
-
-                    BCUserInformationCue.SetRange(Username, Rec.Username);
-                    BCUserInformationCue.SetRange(Email, Rec.Email);
-                    BCUserInformationCue.FindFirst();
-                    BCUserInformationCue.CartValue := Rec.TotalAmount;
-                    BCUserInformationCue.Modify();
+                    DecreaseQuantity();
                 end;
             }
             action(Buy)
@@ -129,8 +105,56 @@ page 50110 "BCCart"
                 PromotedOnly = true;
                 PromotedCategory = Process;
 
-                RunObject = codeunit BCPostBuyFromCart;
+                RunObject = codeunit BCBuyFromCart;
             }
         }
     }
+
+    local procedure IncreaseQuantity()
+    var
+        BCStoreItems: Record "BCStore Items";
+        BCUserInformationCue: Record "BCUser Information Cue";
+    begin
+        if Rec."Item No." = '' then
+            exit;
+
+        BCStoreItems.Get(Rec."Item No.");
+        if Rec.Quantity = BCStoreItems.Inventory then
+            exit;
+
+        Rec.Quantity += 1;
+        Rec.Amount += Rec."Unit Price";
+        Rec.TotalAmount += Rec."Unit Price";
+        Rec.Modify();
+
+        BCUserInformationCue.SetRange(Username, Rec.Username);
+        BCUserInformationCue.SetRange(Email, Rec.Email);
+        BCUserInformationCue.FindFirst();
+        BCUserInformationCue.CartValue := Rec.TotalAmount;
+        BCUserInformationCue.Modify();
+    end;
+
+    local procedure DecreaseQuantity()
+    var
+        BCUserInformationCue: Record "BCUser Information Cue";
+    begin
+        if Rec."Item No." = '' then
+            exit;
+
+        if Rec.Quantity = 1 then begin
+            Rec.Delete();
+            exit;
+        end;
+
+        Rec.Quantity -= 1;
+        Rec.Amount -= Rec."Unit Price";
+        Rec.TotalAmount -= Rec."Unit Price";
+        Rec.Modify();
+
+        BCUserInformationCue.SetRange(Username, Rec.Username);
+        BCUserInformationCue.SetRange(Email, Rec.Email);
+        BCUserInformationCue.FindFirst();
+        BCUserInformationCue.CartValue := Rec.TotalAmount;
+        BCUserInformationCue.Modify();
+    end;
 }

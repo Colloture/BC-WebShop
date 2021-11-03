@@ -111,6 +111,8 @@ page 50102 "BCStore Items"
         BCStoreItems: Record "BCStore Items";
         BCGetItems: Codeunit "BCGet Items";
     begin
+        // TODO - ne delete nego uzimamo samo nove item-e (dateRequest u Setup tablici pa uzimamo samo one sa SystemModifiedAt > dateRequest)
+        // -> proveriti da li ce i inventory da se azurira, a verovatno nece
         BCStoreItems.DeleteAll();
         BCGetItems.Run();
     end;

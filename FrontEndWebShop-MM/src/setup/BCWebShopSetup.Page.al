@@ -16,7 +16,7 @@ page 50101 "BCWeb Shop Setup"
             {
                 Caption = 'BackEnd Web Service';
 
-                field("Backend Web Service URL"; Rec."Backend Web Service URL")
+                field(BackendWebServiceURL; Rec."Backend Web Service URL")
                 {
                     ToolTip = 'Specifies the value of the Backend Web Service URL field.';
                     ApplicationArea = All;
@@ -27,13 +27,13 @@ page 50101 "BCWeb Shop Setup"
                 {
                     Caption = 'Credentials';
 
-                    field("Backend Username"; Rec."Backend Username")
+                    field(BackendUsername; Rec."Backend Username")
                     {
                         Caption = 'Username';
                         ToolTip = 'Specifies the value of the Backend Username field.';
                         ApplicationArea = All;
                     }
-                    field("Backend Password"; Rec."Backend Password")
+                    field(BackendPassword; Rec."Backend Password")
                     {
                         Caption = 'Password';
                         ToolTip = 'Specifies the value of the Backend Password field.';
@@ -64,46 +64,80 @@ page 50101 "BCWeb Shop Setup"
                     ToolTip = 'Specifies the value of the Email of logged in user.';
                 }
             }
+            group(Customer)
+            {
+                Caption = 'Customer Settings';
+                field(GenBusPostingGroup; Rec."Gen. Bus. Posting Group")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Gen. Bus. Posting Group field.';
+                }
+                field(CustomerPostingGroup; Rec."Customer Posting Group")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Customer Posting Group field.';
+                }
+                field(PaymentTermsCode; Rec."Payment Terms Code")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Payment Terms Code field.';
+                }
+            }
+            group(SalesOrder)
+            {
+                Caption = 'Sales Order Settings';
+
+                field(SalesOrderDocumentType; Rec."Sales Order Document Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Sales Order Document Type field.';
+                }
+                field(SalesLineType; Rec."Sales Line Type")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Sales Line Type field.';
+                }
+            }
             group(GenJournalLine)
             {
                 Caption = 'Gen. Journal Line Settings';
 
-                field("Payment Method Code"; Rec."Payment Method Code")
+                field(PaymentMethodCode; Rec."Payment Method Code")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Payment Method Code field.';
                 }
-                field("Document Type"; Rec."Document Type")
+                field(DocumentType; Rec."Document Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Document Type field.';
                 }
-                field("Bal. Account Type"; Rec."Bal. Account Type")
+                field(BalAccountType; Rec."Bal. Account Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Bal. Account Type field.';
                 }
-                field("Bal. Account No."; Rec."Bal. Account No.")
+                field(BalAccountNo; Rec."Bal. Account No.")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Bal. Account No. field.';
                 }
-                field("Account Type"; Rec."Account Type")
+                field(AccountType; Rec."Account Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Account Type field.';
                 }
-                field("Applies To Doc. Type"; "Applies To Doc. Type")
+                field(AppliesToDocType; "Applies To Doc. Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Applies To Doc. Type field.';
                 }
-                field("Journal Template Name"; Rec."Journal Template Name")
+                field(JournalTemplateName; Rec."Journal Template Name")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Journal Template Name field.';
                 }
-                field("Journal Batch Name"; Rec."Journal Batch Name")
+                field(JournalBatchName; Rec."Journal Batch Name")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Journal Batch Name field.';

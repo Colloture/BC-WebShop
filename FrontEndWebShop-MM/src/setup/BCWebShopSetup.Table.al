@@ -80,6 +80,31 @@ table 50100 "BCWeb Shop Setup"
             DataClassification = SystemMetadata;
             Caption = 'Journal Batch Name';
         }
+        field(16; "Gen. Bus. Posting Group"; Code[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Gen. Bus. Posting Group';
+        }
+        field(17; "Customer Posting Group"; Code[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Customer Posting Group';
+        }
+        field(18; "Payment Terms Code"; Code[10])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Payment Terms Code';
+        }
+        field(19; "Sales Order Document Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Sales Order Document Type';
+        }
+        field(20; "Sales Line Type"; Text[20])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Sales Line Type';
+        }
     }
 
     keys

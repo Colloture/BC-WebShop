@@ -5,6 +5,7 @@ codeunit 50105 "BCPost Customer"
     trigger OnRun()
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCAuthorization: Codeunit BCAuthorization;
         httpClient: httpClient;
         HttpResponseMessage: HttpResponseMessage;
         BackEndGetUrlLbl: Label '%1/customersMM?$filter=name eq ''%2'' and email eq ''%3''', Comment = '%1 is Web Shop URL, %2 is name, %3 is email';
@@ -12,7 +13,9 @@ codeunit 50105 "BCPost Customer"
     begin
         BCWebShopSetup.Get();
 
-        SetAuthorization(BCWebShopSetup, httpClient);
+        BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
+
+        // TODO isolated storage
 
         httpClient.Get(StrSubstNo(BackEndGetUrlLbl, BCWebShopSetup."Backend Web Service URL", Rec.Name, Rec."E-Mail"), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
@@ -27,18 +30,6 @@ codeunit 50105 "BCPost Customer"
             BCWebShopSetup.LoggedInEmail := Rec."E-Mail";
             BCWebShopSetup.Modify();
         end;
-    end;
-
-    local procedure SetAuthorization(var BCWebShopSetup: Record "BCWeb Shop Setup"; var httpClient: httpClient)
-    var
-        Base64Convert: Codeunit "Base64 Convert";
-        AuthString: Text;
-        AuthLbl: Label 'Basic %1', Comment = '%1 is Auth String';
-        UserPwdTok: Label '%1:%2', Comment = '%1 is Username, %2 is Password';
-    begin
-        AuthString := StrSubstNo(UserPwdTok, BCWebShopSetup."Backend Username", BCWebShopSetup."Backend Password");
-        AuthString := Base64Convert.ToBase64(AuthString);
-        httpClient.DefaultRequestHeaders().Add('Authorization', StrSubstNo(AuthLbl, AuthString));
     end;
 
     local procedure CustomerExists(var ResponseText: Text): Boolean
@@ -62,25 +53,17 @@ codeunit 50105 "BCPost Customer"
 
     local procedure PostNewCustomer(var BCLogIn: Record BCLogIn; HttpResponseMessage: HttpResponseMessage; var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: httpClient; var ResponseText: Text)
     var
-        Text: Text;
-        JsonObject: JsonObject;
         httpContent: HttpContent;
         httpHeaders: HttpHeaders;
         httpRequestMessage: HttpRequestMessage;
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
         BackEndPostUrlLbl: Label '%1/customersMM', Comment = '%1 is Web Shop URL';
     begin
-        JsonObject.Add('name', BCLogIn.Name);
-        JsonObject.Add('email', BCLogIn."E-Mail");
-        JsonObject.Add('genBusPostingGroup', 'DOMESTIC');
-        JsonObject.Add('customerPostingGroup', 'DOMESTIC');
-        JsonObject.Add('paymentTermsCode', '10 DAYS');
-        JsonObject.WriteTo(Text);
-
-        httpContent.WriteFrom(Text);
+        httpContent.WriteFrom(CreateJsonObject(BCLogIn, BCWebShopSetup));
         httpContent.GetHeaders(httpHeaders);
-        httpHeaders.Clear();
+        httpHeaders.Remove('Content-Type');
         httpHeaders.Add('Content-Type', 'application/json');
+
         httpRequestMessage.Content := httpContent;
         httpRequestMessage.SetRequestUri(StrSubstNo(BackEndPostUrlLbl, BCWebShopSetup."Backend Web Service URL"));
         httpRequestMessage.Method := 'POST';
@@ -93,6 +76,20 @@ codeunit 50105 "BCPost Customer"
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
+    end;
+
+    local procedure CreateJsonObject(var BCLogIn: Record BCLogIn; var BCWebShopSetup: Record "BCWeb Shop Setup"): Text
+    var
+        JsonObject: JsonObject;
+        Text: Text;
+    begin
+        JsonObject.Add('name', BCLogIn.Name);
+        JsonObject.Add('email', BCLogIn."E-Mail");
+        JsonObject.Add('genBusPostingGroup', BCWebShopSetup."Gen. Bus. Posting Group");
+        JsonObject.Add('customerPostingGroup', BCWebShopSetup."Customer Posting Group");
+        JsonObject.Add('paymentTermsCode', BCWebShopSetup."Payment Terms Code");
+        JsonObject.WriteTo(Text);
+        exit(Text);
     end;
 
     local procedure ParseResponse(var ResponseText: Text)

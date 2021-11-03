@@ -45,5 +45,8 @@ table 50103 "BCUser Information Cue"
         {
             Clustered = true;
         }
+        key(Key2; Username, Email)
+        {
+        }
     }
 }
