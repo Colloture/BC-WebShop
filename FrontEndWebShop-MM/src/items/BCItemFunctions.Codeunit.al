@@ -79,6 +79,8 @@ codeunit 50108 "BCItemFunctions"
             BCFavorites."Unit Price" := BCStoreItems."Unit Price";
             BCFavorites."Base Unit of Measure" := BCStoreItems."Base Unit of Measure";
             BCFavorites.Inventory := BCStoreItems.Inventory;
+            BCFavorites.Sport := BCStoreItems.Sport;
+            BCFavorites.Brand := BCStoreItems.Brand;
             BCFavorites.Insert();
 
             Message('New Item added to the Favorites.');

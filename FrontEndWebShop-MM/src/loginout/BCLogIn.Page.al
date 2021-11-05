@@ -70,7 +70,6 @@ page 50108 "BCLogIn"
             Rec."E-Mail" := BCWebShopSetup.LoggedInEmail;
             Rec.Insert();
             Message('You''re already logged in.');
-            CurrPage.Close();
             exit;
         end;
 

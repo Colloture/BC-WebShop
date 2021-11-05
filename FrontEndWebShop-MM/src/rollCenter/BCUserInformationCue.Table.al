@@ -22,13 +22,13 @@ table 50103 "BCUser Information Cue"
         }
         field(4; Favorites; Integer)
         {
-            Caption = 'No. of Favorite Items';
+            Caption = 'Favorites';
             FieldClass = FlowField;
             CalcFormula = count(BCFavorites where(Username = field(Username), Email = field(Email)));
         }
         field(5; Cart; Integer)
         {
-            Caption = 'No. of Items in Cart';
+            Caption = 'Cart';
             FieldClass = FlowField;
             CalcFormula = count(BCCart where(Username = field(Username), Email = field(Email)));
         }
@@ -37,6 +37,12 @@ table 50103 "BCUser Information Cue"
             Caption = 'Value of Items in Cart';
             FieldClass = FlowField;
             CalcFormula = sum(BCCart.Amount where(Username = field(Username), Email = field(Email)));
+        }
+        field(7; Orders; Integer)
+        {
+            Caption = 'Orders';
+            FieldClass = FlowField;
+            CalcFormula = count(BCOrders where(Username = field(Username), Email = field(Email)));
         }
     }
     keys

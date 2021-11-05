@@ -24,15 +24,30 @@ page 50111 "BCFavorites"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Description field.';
                 }
-                field("Item Category"; Rec."Item Category")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Item Category field.';
-                }
                 field("Unit Price"; Rec."Unit Price")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Unit Price field.';
+                }
+                field("Base Unit of Measure"; Rec."Base Unit of Measure")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Base Unit of Measure field.';
+                }
+                field(Sport; Rec.Sport)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Sport field.';
+                }
+                field(Brand; Rec.Brand)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Brand field.';
+                }
+                field("Item Category"; Rec."Item Category")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Item Category field.';
                 }
             }
         }

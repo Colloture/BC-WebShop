@@ -12,7 +12,6 @@ codeunit 50114 "BCPostSalesOrder"
             SalesLineNo += 10000;
         until BCCart.Next() = 0;
 
-        // TODO - change to SOAP
         PostOrder(BCWebShopSetup, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo, httpClient);
     end;
 

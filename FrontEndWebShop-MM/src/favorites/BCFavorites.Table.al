@@ -44,6 +44,16 @@ table 50108 "BCFavorites"
             DataClassification = CustomerContent;
             Caption = 'Base Unit of Measure';
         }
+        field(9; Sport; Text[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Sport';
+        }
+        field(10; Brand; Text[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Brand';
+        }
     }
 
     keys

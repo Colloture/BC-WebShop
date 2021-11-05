@@ -32,6 +32,12 @@ page 50105 "BCUser Information Queue"
                     DrillDownPageId = BCCart;
                     ToolTip = 'Specifies Value of Items in Cart.';
                 }
+                field(Orders; Rec.Orders)
+                {
+                    ApplicationArea = All;
+                    DrillDownPageId = BCOrder;
+                    ToolTip = 'Specifies the value of the Orders field.';
+                }
             }
         }
     }

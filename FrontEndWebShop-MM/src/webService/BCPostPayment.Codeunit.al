@@ -25,14 +25,10 @@ codeunit 50115 "BCPostPayment"
             httpRequestMessage.Method := 'POST';
 
             httpClient.Send(httpRequestMessage, HttpResponseMessage);
-            if HttpResponseMessage.IsSuccessStatusCode() then
-                Message('Thank you for shopping with us.')
-            else begin
+            if not HttpResponseMessage.IsSuccessStatusCode() then begin
                 HttpResponseMessage.Content().ReadAs(Text);
                 Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode(), Text);
             end;
-
-            // TODO - SOAP for posting (right now that part is in oData Post method on backend)
         end;
     end;
 
@@ -115,7 +111,6 @@ codeunit 50115 "BCPostPayment"
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
         BackEndWebShopUrlLbl: Label '%1/allGenJournalLinesMM?$filter=journalTemplateName eq ''%2'' and journalBatchName eq ''%3''', Comment = '%1 is Web Shop URL, %2 is template name, %3 is batch name';
     begin
-        // TODO - after adding soap this will be same endpoint as posting
         httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", BCWebShopSetup."Journal Template Name", BCWebShopSetup."Journal Batch Name"), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
