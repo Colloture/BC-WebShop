@@ -123,13 +123,8 @@ page 50102 "BCStore Items"
 
     trigger OnOpenPage()
     var
-        BCStoreItems: Record "BCStore Items";
         BCGetItems: Codeunit "BCGet Items";
     begin
-        // TODO - ne delete nego uzimamo samo nove item-e (dateRequest u Setup tablici pa uzimamo samo one sa SystemModifiedAt > dateRequest)
-        // -> proveriti da li ce i inventory da se azurira = HOCE :)
-        // Message('%1', Format(CurrentDateTime,0, 9));
-        BCStoreItems.DeleteAll();
         BCGetItems.Run();
     end;
 

@@ -9,16 +9,24 @@ codeunit 50101 "BCGet Items"
         HttpResponseMessage: HttpResponseMessage;
         ResponseText: Text;
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
-        BackEndWebShopUrlLbl: Label '%1/itemsMM?$filter=intern eq ''MM''', Comment = '%1 is Web Shop URL';
+        BackEndWebShopUrAllItemslLbl: Label '%1/itemsMM?$filter=intern eq ''MM''', Comment = '%1 is Web Shop URL';
+        BackEndWebShopUrNewItemslLbl: Label '%1/itemsMM?$filter=intern eq ''MM'' and lastModifiedDateTime gt %2', Comment = '%1 is Web Shop URL, %2 is last date modified items';
     begin
         BCWebShopSetup.Get();
 
         BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
 
-        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL"), HttpResponseMessage);
+        if BCWebShopSetup."Last Date Modified Items" = '' then
+            httpClient.Get(StrSubstNo(BackEndWebShopUrAllItemslLbl, BCWebShopSetup."Backend Web Service URL"), HttpResponseMessage)
+        else
+            httpClient.Get(StrSubstNo(BackEndWebShopUrNewItemslLbl, BCWebShopSetup."Backend Web Service URL", BCWebShopSetup."Last Date Modified Items"), HttpResponseMessage);
+
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             ParseJson(ResponseText, BCStoreItems);
+
+            BCWebShopSetup."Last Date Modified Items" := Format(CurrentDateTime, 0, 9);
+            BCWebShopSetup.Modify();
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
@@ -26,6 +34,7 @@ codeunit 50101 "BCGet Items"
 
     local procedure ParseJson(ResponseText: Text; var BCStoreItems: Record "BCStore Items")
     var
+        ItemNo: Code[20];
         JsonObject: JsonObject;
         JsonToken: JsonToken;
         JsonArray: JsonArray;
@@ -35,9 +44,15 @@ codeunit 50101 "BCGet Items"
         JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
         JsonArray := JsonToken.AsArray();
+        if JsonArray.Count = 0 then
+            exit;
 
         foreach ItemJsonToken in JsonArray do begin
             ItemJsonObject := ItemJsonToken.AsObject();
+
+            ItemNo := CopyStr(GetFieldValue(ItemJsonObject, 'number').AsCode(), 1, MaxStrLen(BCStoreItems."No."));
+            if BCStoreItems.Get(ItemNo) then
+                BCStoreItems.Delete();
 
             BCStoreItems.Init();
             BCStoreItems."No." := CopyStr(GetFieldValue(ItemJsonObject, 'number').AsCode(), 1, MaxStrLen(BCStoreItems."No."));

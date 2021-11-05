@@ -13,28 +13,25 @@ page 50103 "BCWeb Shop RC"
             {
                 ApplicationArea = All;
             }
-
-            group(General)
+            part(UserInformationQueue; "BCUser Information Queue")
             {
-                part(SportsEquipmentQueue; "BCSports Equipment Queue")
-                {
-                    ApplicationArea = All;
-                }
-                part(UserInformationQueue; "BCUser Information Queue")
-                {
-                    ApplicationArea = All;
-                    Visible = true;
-                }
-                part(SportsQueue; "BCSports Queue")
-                {
-                    ApplicationArea = All;
-                    Visible = true;
-                }
-                part(BrandsQueue; "BCBrands Queue")
-                {
-                    ApplicationArea = All;
-                    Visible = true;
-                }
+                ApplicationArea = All;
+                Visible = true;
+            }
+            part(SportsEquipmentQueue; "BCSports Equipment Queue")
+            {
+                ApplicationArea = All;
+                Visible = true;
+            }
+            part(SportsQueue; "BCSports Queue")
+            {
+                ApplicationArea = All;
+                Visible = true;
+            }
+            part(BrandsQueue; "BCBrands Queue")
+            {
+                ApplicationArea = All;
+                Visible = true;
             }
         }
     }

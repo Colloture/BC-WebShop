@@ -22,6 +22,11 @@ page 50101 "BCWeb Shop Setup"
                     ApplicationArea = All;
                     MultiLine = true;
                 }
+                field("Last Date Modified Items"; Rec."Last Date Modified Items")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Last Date Modified Items field.';
+                }
 
                 group(BackEndWebServiceCredentials)
                 {

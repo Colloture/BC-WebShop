@@ -105,8 +105,13 @@ table 50100 "BCWeb Shop Setup"
             DataClassification = SystemMetadata;
             Caption = 'Sales Line Type';
         }
+        field(21; "Last Date Modified Items"; Text[30])
+        {
+            DataClassification = SystemMetadata;
+            Caption = 'Last Date Modified Items';
+        }
     }
-
+   
     keys
     {
         key(Key1; "Primary Key")
