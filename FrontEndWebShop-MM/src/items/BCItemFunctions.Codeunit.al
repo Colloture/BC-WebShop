@@ -4,7 +4,6 @@ codeunit 50108 "BCItemFunctions"
     var
         BCCart: Record BCCart;
         BCWebShopSetup: Record "BCWeb Shop Setup";
-        BCUserInformationCue: Record "BCUser Information Cue";
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
@@ -38,13 +37,6 @@ codeunit 50108 "BCItemFunctions"
         end;
 
         Message('New Item added to the Cart.');
-
-        BCUserInformationCue.SetRange(Username, BCCart.Username);
-        BCUserInformationCue.SetRange(Email, BCCart.Email);
-        BCUserInformationCue.FindFirst();
-        BCUserInformationCue.Cart += 1;
-        BCUserInformationCue.CartValue := BCCart.TotalAmount;
-        BCUserInformationCue.Modify();
     end;
 
     procedure OpenYourCart()
@@ -53,6 +45,8 @@ codeunit 50108 "BCItemFunctions"
         BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
         BCWebShopSetup.Get();
+        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+            Error('Please Log In in order to see your Cart.');
 
         BCCart.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
@@ -64,7 +58,6 @@ codeunit 50108 "BCItemFunctions"
     var
         BCFavorites: Record BCFavorites;
         BCWebShopSetup: Record "BCWeb Shop Setup";
-        BCUserInformationCue: Record "BCUser Information Cue";
     begin
         BCWebShopSetup.Get();
         if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
@@ -89,12 +82,6 @@ codeunit 50108 "BCItemFunctions"
             BCFavorites.Insert();
 
             Message('New Item added to the Favorites.');
-
-            BCUserInformationCue.SetRange(Username, BCFavorites.Username);
-            BCUserInformationCue.SetRange(Email, BCFavorites.Email);
-            BCUserInformationCue.FindFirst();
-            BCUserInformationCue.Favorites += 1;
-            BCUserInformationCue.Modify();
         end;
     end;
 
@@ -104,6 +91,8 @@ codeunit 50108 "BCItemFunctions"
         BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
         BCWebShopSetup.Get();
+        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+            Error('Please Log In in order to see your Favorites.');
 
         BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
         BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);

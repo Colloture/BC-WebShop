@@ -51,6 +51,6 @@ table 50101 "BCStore Items"
 
     fieldgroups
     {
-        fieldgroup(Brick; "No.", Description, Inventory, "Unit Price", "Base Unit of Measure", Image) { }
+        fieldgroup(Brick; "No.", Description, Inventory, "Unit Price", Image) { }
     }
 }

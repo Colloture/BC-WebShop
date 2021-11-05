@@ -63,5 +63,9 @@ table 50107 "BCCart"
         {
             Clustered = true;
         }
+        key(Key2; Username, Email)
+        {
+            SumIndexFields = Amount;
+        }
     }
 }

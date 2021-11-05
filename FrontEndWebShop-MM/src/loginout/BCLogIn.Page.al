@@ -52,6 +52,7 @@ page 50108 "BCLogIn"
                         exit;
                     BCPostCustomer.Run(Rec);
                     VisibleAction := false;
+                    CurrPage.Close();
                     Page.Run(50102);
                 end;
             }
@@ -69,6 +70,7 @@ page 50108 "BCLogIn"
             Rec."E-Mail" := BCWebShopSetup.LoggedInEmail;
             Rec.Insert();
             Message('You''re already logged in.');
+            CurrPage.Close();
             exit;
         end;
 
