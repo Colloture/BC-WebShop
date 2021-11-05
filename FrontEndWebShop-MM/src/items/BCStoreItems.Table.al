@@ -39,6 +39,21 @@ table 50101 "BCStore Items"
             DataClassification = CustomerContent;
             Caption = 'Image';
         }
+        field(8; Sport; Text[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Sport';
+        }
+        field(9; Brand; Text[20])
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Brand';
+        }
+        field(10; "Last Date Modified"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Last Date Modified';
+        }
     }
 
     keys

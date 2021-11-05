@@ -46,6 +46,9 @@ codeunit 50101 "BCGet Items"
             BCStoreItems.Inventory := GetFieldValue(ItemJsonObject, 'inventory').AsDecimal();
             BCStoreItems."Base Unit of Measure" := CopyStr(GetFieldValue(ItemJsonObject, 'baseUnitOfMeasure').AsCode(), 1, MaxStrLen(BCStoreItems."Base Unit of Measure"));
             BCStoreItems."Item Category" := CopyStr(GetFieldValue(ItemJsonObject, 'itemCategoryCode').AsCode(), 1, MaxStrLen(BCStoreItems."Item Category"));
+            BCStoreItems."Last Date Modified" := GetFieldValue(ItemJsonObject, 'lastModifiedDateTime').AsDateTime();
+            BCStoreItems.Sport := CopyStr(GetFieldValue(ItemJsonObject, 'sport').AsText(), 1, MaxStrLen(BCStoreItems.Sport));
+            BCStoreItems.Brand := CopyStr(GetFieldValue(ItemJsonObject, 'brand').AsText(), 1, MaxStrLen(BCStoreItems.Brand));
             GetItemImage(BCStoreItems, ItemJsonObject);
 
             BCStoreItems.Insert();

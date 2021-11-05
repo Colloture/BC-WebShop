@@ -1,6 +1,6 @@
 enum 50110 "BCSport"
 {
-    value(0; "") { }
+    value(0; " ") { }
     value(1; Football) { }
     value(2; Volleyball) { }
     value(3; Fitness) { }

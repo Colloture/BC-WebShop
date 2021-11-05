@@ -1,6 +1,6 @@
 enum 50111 "BCBrand"
 {
-    value(0; "") { }
+    value(0; " ") { }
     value(1; Nike) { }
     value(2; Adidas) { }
     value(3; Mikasa) { }

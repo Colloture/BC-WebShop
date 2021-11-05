@@ -25,6 +25,16 @@ page 50103 "BCWeb Shop RC"
                     ApplicationArea = All;
                     Visible = true;
                 }
+                part(SportsQueue; "BCSports Queue")
+                {
+                    ApplicationArea = All;
+                    Visible = true;
+                }
+                part(BrandsQueue; "BCBrands Queue")
+                {
+                    ApplicationArea = All;
+                    Visible = true;
+                }
             }
         }
     }

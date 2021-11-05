@@ -30,10 +30,25 @@ page 50102 "BCStore Items"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Unit Price field.';
                 }
+                field("Base Unit of Measure"; Rec."Base Unit of Measure")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Base Unit of Measure field.';
+                }
                 field("Item Category"; Rec."Item Category")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Item Category field.';
+                }
+                field(Sport; Rec.Sport)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Sport field.';
+                }
+                field(Brand; Rec.Brand)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Brand field.';
                 }
             }
         }
@@ -112,7 +127,8 @@ page 50102 "BCStore Items"
         BCGetItems: Codeunit "BCGet Items";
     begin
         // TODO - ne delete nego uzimamo samo nove item-e (dateRequest u Setup tablici pa uzimamo samo one sa SystemModifiedAt > dateRequest)
-        // -> proveriti da li ce i inventory da se azurira, a verovatno nece
+        // -> proveriti da li ce i inventory da se azurira = HOCE :)
+        // Message('%1', Format(CurrentDateTime,0, 9));
         BCStoreItems.DeleteAll();
         BCGetItems.Run();
     end;
