@@ -37,6 +37,16 @@ page 50110 "BCItem-MM"
                 field(itemCategoryCode; Rec."Item Category Code")
                 {
                 }
+                // TODO - add this 3 fields on frontend
+                field(lastModifiedDateTime; Rec."Last DateTime Modified")
+                {
+                }
+                field(sport; Rec.BCSport)
+                {
+                }
+                field(brand; Rec.BCBrand)
+                {
+                }
                 field(image; Image)
                 {
                 }
