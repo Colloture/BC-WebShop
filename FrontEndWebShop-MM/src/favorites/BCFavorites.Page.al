@@ -37,4 +37,47 @@ page 50111 "BCFavorites"
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(AddToCart)
+            {
+                ApplicationArea = All;
+                Caption = 'Add to Cart';
+                ToolTip = 'Executes the Add to Cart action.';
+                Image = Add;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                var
+                    BCStoreItems: Record "BCStore Items";
+                begin
+                    BCStoreItems.Get(Rec."Item No.");
+                    BCItemFunctions.AddNewItemToCart(BCStoreItems);
+                end;
+            }
+            action(OpenCart)
+            {
+                ApplicationArea = All;
+                Caption = 'Your Cart';
+                ToolTip = 'Executes the Open Your Cart action.';
+                Image = Open;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+
+                trigger OnAction()
+                begin
+                    BCItemFunctions.OpenYourCart();
+                end;
+            }
+        }
+    }
+
+    var
+        BCItemFunctions: Codeunit BCItemFunctions;
 }
