@@ -17,6 +17,7 @@ codeunit 50114 "BCPostSalesOrder"
 
     local procedure PostSalesHeader(var BCWebShopSetup: Record "BCWeb Shop Setup"; var SalesHeaderNo: Code[20]; var SalesHeaderDocumentType: Text; httpClient: httpClient)
     var
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         Text: Text;
         Response: Text;
         JsonObject: JsonObject;
@@ -28,7 +29,7 @@ codeunit 50114 "BCPostSalesOrder"
         BackEndPostUrlLbl: Label '%1/salesHeadersMM', Comment = '%1 is Web Shop URL';
     begin
         JsonObject.Add('documentType', BCWebShopSetup."Sales Order Document Type");
-        JsonObject.Add('sellToCustomerNo', BCWebShopSetup.UserNo);
+        JsonObject.Add('sellToCustomerNo', BCLoggedInUser.GetUserNo());
         JsonObject.WriteTo(Text);
 
         httpContent.WriteFrom(Text);

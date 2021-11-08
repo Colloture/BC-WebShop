@@ -4,7 +4,7 @@ table 50108 "BCFavorites"
 
     fields
     {
-        field(1; Username; Text[100])
+        field(1; Username; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'Username';

@@ -6,6 +6,7 @@ codeunit 50107 "BCBuyFromCart"
     var
         BCCartCopy: Record BCCart;
         BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         BCAuthorization: Codeunit BCAuthorization;
         BCPostSalesOrder: Codeunit BCPostSalesOrder;
         BCPostPayment: Codeunit BCPostPayment;
@@ -15,22 +16,36 @@ codeunit 50107 "BCBuyFromCart"
         SalesHeaderDocumentType: Text;
         PostedSalesHeaderNo: Code[20];
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to Buy Items.');
 
         if Rec.Count = 0 then
             Error('Your Cart is empty.');
 
+        BCWebShopSetup.Get();
         BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
 
         BCCartCopy.Copy(Rec);
-        BCPostSalesOrder.CreateOrder(BCWebShopSetup, Rec, httpClient, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo);
+        BCPostSalesOrder.CreateOrder(BCWebShopSetup, BCCartCopy, httpClient, SalesHeaderNo, SalesHeaderDocumentType, PostedSalesHeaderNo);
         BCPostPayment.CreatePayment(BCWebShopSetup, httpClient, SalesHeaderNo);
-        BCFillInOrders.InsertOrders(BCWebShopSetup, PostedSalesHeaderNo, BCCartCopy);
+        BCCartCopy.Copy(Rec);
+        ChangeInventoryOnFront(BCCartCopy);
+        BCCartCopy.Copy(Rec);
+        BCFillInOrders.InsertOrders(PostedSalesHeaderNo, BCCartCopy);
 
         Message('Thank you for shopping with us. Your order number is ' + PostedSalesHeaderNo + '.');
 
         Rec.DeleteAll();
+    end;
+
+    local procedure ChangeInventoryOnFront(var BCCart: Record BCCart)
+    var
+        BCStoreItems: Record "BCStore Items";
+    begin
+        repeat
+            BCStoreItems.Get(BCCart."Item No.");
+            BCStoreItems.Inventory -= BCCart.Quantity;
+            BCStoreItems.Modify();
+        until BCCart.Next() = 0;
     end;
 }

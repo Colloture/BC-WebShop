@@ -4,15 +4,10 @@ table 50107 "BCCart"
 
     fields
     {
-        field(1; Username; Text[100])
+        field(1; Username; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'Username';
-        }
-        field(2; Email; Text[80])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Email';
         }
         field(3; "Item No."; Code[20])
         {
@@ -53,17 +48,17 @@ table 50107 "BCCart"
         {
             Caption = 'Total Amount Excl. VAT';
             FieldClass = FlowField;
-            CalcFormula = sum(BCCart.Amount where(Username = field(Username), Email = field(Email)));
+            CalcFormula = sum(BCCart.Amount where(Username = field(Username)));
         }
     }
 
     keys
     {
-        key(Key1; Username, Email, "Item No.")
+        key(Key1; Username, "Item No.")
         {
             Clustered = true;
         }
-        key(Key2; Username, Email)
+        key(Key2; Username)
         {
             SumIndexFields = Amount;
         }

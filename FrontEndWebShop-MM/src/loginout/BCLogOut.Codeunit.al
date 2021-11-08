@@ -1,26 +1,14 @@
 codeunit 50106 "BCLogOut"
 {
     trigger OnRun()
+    var
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             exit;
 
-        BCWebShopSetup.UserNo := '';
-        BCWebShopSetup.LoggedInUsername := '';
-        BCWebShopSetup.LoggedInEmail := '';
-        BCWebShopSetup.Modify();
+        BCLoggedInUser.SetUser('');
+
         Message('Successfull logout.');
-    end;
-
-    var
-        BCWebShopSetup: Record "BCWeb Shop Setup";
-
-    procedure IsLoggedIn(): Boolean
-    begin
-        if (BCWebShopSetup.LoggedInUsername <> '') and (BCWebShopSetup.LoggedInEmail <> '') then
-            exit(true)
-        else
-            exit(false);
     end;
 }

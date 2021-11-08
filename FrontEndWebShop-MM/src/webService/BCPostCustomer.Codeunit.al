@@ -1,65 +1,63 @@
 codeunit 50105 "BCPost Customer"
 {
-    TableNo = BCLogIn;
-
-    trigger OnRun()
+    procedure GetCustomer()
     var
         BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         BCAuthorization: Codeunit BCAuthorization;
+        ResponseText: Text;
         httpClient: httpClient;
         HttpResponseMessage: HttpResponseMessage;
-        BackEndGetUrlLbl: Label '%1/customersMM?$filter=name eq ''%2'' and email eq ''%3''', Comment = '%1 is Web Shop URL, %2 is name, %3 is email';
-        ResponseText: Text;
+        JsonObject: JsonObject;
+        JsonToken: JsonToken;
+        JsonArray: JsonArray;
+        BackEndGetUrlLbl: Label '%1/customersMM?$filter=name eq ''%2''', Comment = '%1 is Web Shop URL, %2 is name';
     begin
         BCWebShopSetup.Get();
 
         BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
 
-        // TODO isolated storage
+        httpClient.Get(StrSubstNo(BackEndGetUrlLbl, BCWebShopSetup."Backend Web Service URL", BCLoggedInUser.GetUser()), HttpResponseMessage);
+        if not HttpResponseMessage.IsSuccessStatusCode() then
+            Error('Something went wrong while logging in.');
 
-        httpClient.Get(StrSubstNo(BackEndGetUrlLbl, BCWebShopSetup."Backend Web Service URL", Rec.Name, Rec."E-Mail"), HttpResponseMessage);
-        if HttpResponseMessage.IsSuccessStatusCode() then begin
-            HttpResponseMessage.Content.ReadAs(ResponseText);
-            if CustomerExists(ResponseText) then
-                Message('Welcome back.')
-            else
-                PostNewCustomer(Rec, HttpResponseMessage, BCWebShopSetup, httpClient, ResponseText);
+        HttpResponseMessage.Content.ReadAs(ResponseText);
 
-            BCWebShopSetup.UserNo := CopyStr(ResponseText, 1, MaxStrLen(BCWebShopSetup.UserNo));
-            BCWebShopSetup.LoggedInUsername := Rec.Name;
-            BCWebShopSetup.LoggedInEmail := Rec."E-Mail";
-            BCWebShopSetup.Modify();
-        end;
-    end;
-
-    local procedure CustomerExists(var ResponseText: Text): Boolean
-    var
-        JsonObject: JsonObject;
-        JsonToken: JsonToken;
-        JsonArray: JsonArray;
-    begin
         JsonObject.ReadFrom(ResponseText);
         JsonObject.Get('value', JsonToken);
         JsonArray := JsonToken.AsArray();
+
         if JsonArray.Count = 0 then
-            exit(false)
+            exit
         else
             foreach JsonToken in JsonArray do begin
                 JsonObject := JsonToken.AsObject();
                 ResponseText := GetFieldValue(JsonObject, 'no').AsCode();
-                exit(true);
+
+                BCLoggedInUser.SetUserNo(ResponseText);
+                Message('Successfully logged in.');
+                exit;
             end;
     end;
 
-    local procedure PostNewCustomer(var BCLogIn: Record BCLogIn; HttpResponseMessage: HttpResponseMessage; var BCWebShopSetup: Record "BCWeb Shop Setup"; httpClient: httpClient; var ResponseText: Text)
+    procedure PostNewCustomer()
     var
+        BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
+        BCAuthorization: Codeunit BCAuthorization;
+        ResponseText: Text;
+        httpClient: httpClient;
         httpContent: HttpContent;
         httpHeaders: HttpHeaders;
         httpRequestMessage: HttpRequestMessage;
+        HttpResponseMessage: HttpResponseMessage;
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
         BackEndPostUrlLbl: Label '%1/customersMM', Comment = '%1 is Web Shop URL';
     begin
-        httpContent.WriteFrom(CreateJsonObject(BCLogIn, BCWebShopSetup));
+        BCWebShopSetup.Get();
+        BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
+
+        httpContent.WriteFrom(CreateJsonObject(BCWebShopSetup));
         httpContent.GetHeaders(httpHeaders);
         httpHeaders.Remove('Content-Type');
         httpHeaders.Add('Content-Type', 'application/json');
@@ -72,19 +70,21 @@ codeunit 50105 "BCPost Customer"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             ParseResponse(ResponseText);
-            Message('Successfull login.')
+
+            BCLoggedInUser.SetUserNo(ResponseText);
+            Message('Successfull register.')
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
-    local procedure CreateJsonObject(var BCLogIn: Record BCLogIn; var BCWebShopSetup: Record "BCWeb Shop Setup"): Text
+    local procedure CreateJsonObject(var BCWebShopSetup: Record "BCWeb Shop Setup"): Text
     var
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         JsonObject: JsonObject;
         Text: Text;
     begin
-        JsonObject.Add('name', BCLogIn.Name);
-        JsonObject.Add('email', BCLogIn."E-Mail");
+        JsonObject.Add('name', BCLoggedInUser.GetUser());
         JsonObject.Add('genBusPostingGroup', BCWebShopSetup."Gen. Bus. Posting Group");
         JsonObject.Add('customerPostingGroup', BCWebShopSetup."Customer Posting Group");
         JsonObject.Add('paymentTermsCode', BCWebShopSetup."Payment Terms Code");

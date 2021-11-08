@@ -4,7 +4,6 @@ page 50108 "BCLogIn"
     PageType = Card;
     ApplicationArea = All;
     UsageCategory = Administration;
-    SourceTable = BCLogIn;
 
     layout
     {
@@ -12,17 +11,19 @@ page 50108 "BCLogIn"
         {
             group(General)
             {
-                field(Name; Rec.Name)
+                field(Username; Username)
                 {
                     ApplicationArea = All;
                     Caption = 'Username';
-                    ToolTip = 'Specifies the value of the Name field.';
+                    ToolTip = 'Specifies the value of the Username field.';
                     NotBlank = true;
                 }
-                field("E-Mail"; Rec."E-Mail")
+                field(Password; Password)
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Email field.';
+                    Caption = 'Password';
+                    ToolTip = 'Specifies the value of the Password field.';
+                    ExtendedDatatype = Masked;
                     NotBlank = true;
                 }
             }
@@ -33,11 +34,59 @@ page 50108 "BCLogIn"
     {
         area(Navigation)
         {
-            action(LogIn)
+            // action(LogIn)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Log In';
+            //     ToolTip = 'Executes the Log In action.';
+            //     Image = Log;
+            //     Promoted = true;
+            //     PromotedOnly = true;
+            //     PromotedCategory = Process;
+            //     Visible = VisibleAction;
+
+            //     trigger OnAction()
+            //     var
+            //         BCPostCustomer: Codeunit "BCPost Customer";
+            //     begin
+            //         if (Rec.Name = '') and (Rec."E-Mail" = '') then
+            //             exit;
+            //         BCPostCustomer.Run(Rec);
+            //         VisibleAction := false;
+            //         CurrPage.Close();
+            //         Page.Run(50102);
+            //     end;
+            // }
+            action(Register)
+            {
+                ApplicationArea = All;
+                Caption = 'Register';
+                ToolTip = 'Executes the Register action.';
+                Image = LogSetup;
+                Promoted = true;
+                PromotedOnly = true;
+                PromotedCategory = Process;
+                Visible = VisibleAction;
+
+                trigger OnAction()
+                var
+                    BCPostCustomer: Codeunit "BCPost Customer";
+                    BCLoggedInUser: codeunit "BCLoggedIn User";
+                begin
+                    BCLoggedInUser.SetUser(Username);
+                    BCLoggedInUser.Register(Password);
+
+                    BCPostCustomer.PostNewCustomer();
+                    VisibleAction := false;
+                    CurrPage.Close();
+                    Page.Run(50102);
+                end;
+            }
+            action(Login)
             {
                 ApplicationArea = All;
                 Caption = 'Log In';
-                ToolTip = 'Executes the Log In action.';
+                ToolTip = 'Executes the Login action.';
                 Image = Log;
                 Promoted = true;
                 PromotedOnly = true;
@@ -47,10 +96,12 @@ page 50108 "BCLogIn"
                 trigger OnAction()
                 var
                     BCPostCustomer: Codeunit "BCPost Customer";
+                    BCLoggedInUser: Codeunit "BCLoggedIn User";
                 begin
-                    if (Rec.Name = '') and (Rec."E-Mail" = '') then
-                        exit;
-                    BCPostCustomer.Run(Rec);
+                    BCLoggedInUser.SetUser(Username);
+                    BCLoggedInUser.ValidatePassword(Password);
+
+                    BCPostCustomer.GetCustomer();
                     VisibleAction := false;
                     CurrPage.Close();
                     Page.Run(50102);
@@ -61,23 +112,18 @@ page 50108 "BCLogIn"
 
     trigger OnOpenPage()
     var
-        BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername <> '') and (BCWebShopSetup.LoggedInEmail <> '') then begin
-            Rec.Init();
-            Rec.Name := BCWebShopSetup.LoggedInUsername;
-            Rec."E-Mail" := BCWebShopSetup.LoggedInEmail;
-            Rec.Insert();
+        if BCLoggedInUser.GetUser() <> '' then begin
             Message('You''re already logged in.');
             exit;
         end;
 
-        Rec.Init();
-        Rec.Insert();
         VisibleAction := true;
     end;
 
     var
         VisibleAction: Boolean;
+        Username: Text[250];
+        Password: Text[250];
 }

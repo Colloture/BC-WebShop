@@ -10,15 +10,10 @@ table 50111 "BCOrders"
             AutoIncrement = true;
             Caption = 'No.';
         }
-        field(2; Username; Text[100])
+        field(2; Username; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'Username';
-        }
-        field(3; Email; Text[80])
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Email';
         }
         field(4; "Order No."; Code[20])
         {
@@ -49,7 +44,7 @@ table 50111 "BCOrders"
 
     keys
     {
-        key(Key1; "No.", Username, Email)
+        key(Key1; "No.", Username)
         {
             Clustered = true;
         }

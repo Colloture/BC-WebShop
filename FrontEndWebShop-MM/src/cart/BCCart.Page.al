@@ -119,8 +119,10 @@ page 50110 "BCCart"
             exit;
 
         BCStoreItems.Get(Rec."Item No.");
-        if Rec.Quantity = BCStoreItems.Inventory then
+        if Rec.Quantity = BCStoreItems.Inventory then begin
+            Message('You reached maximum amount for this Item.');
             exit;
+        end;
 
         Rec.Quantity += 1;
         Rec.Amount += Rec."Unit Price";
@@ -128,7 +130,6 @@ page 50110 "BCCart"
         Rec.Modify();
 
         BCUserInformationCue.SetRange(Username, Rec.Username);
-        BCUserInformationCue.SetRange(Email, Rec.Email);
         BCUserInformationCue.FindFirst();
         BCUserInformationCue.CartValue := Rec.TotalAmount;
         BCUserInformationCue.Modify();
@@ -152,7 +153,6 @@ page 50110 "BCCart"
         Rec.Modify();
 
         BCUserInformationCue.SetRange(Username, Rec.Username);
-        BCUserInformationCue.SetRange(Email, Rec.Email);
         BCUserInformationCue.FindFirst();
         BCUserInformationCue.CartValue := Rec.TotalAmount;
         BCUserInformationCue.Modify();

@@ -25,21 +25,6 @@ table 50100 "BCWeb Shop Setup"
             ExtendedDatatype = Masked;
             Caption = 'Backend Password';
         }
-        field(5; UserNo; Code[20])
-        {
-            DataClassification = SystemMetadata;
-            Caption = 'Logged In User No.';
-        }
-        field(6; LoggedInUsername; Text[100])
-        {
-            DataClassification = SystemMetadata;
-            Caption = 'Logged In Username';
-        }
-        field(7; LoggedInEmail; Text[80])
-        {
-            DataClassification = SystemMetadata;
-            Caption = 'Logged In Email';
-        }
         field(8; "Payment Method Code"; Code[10])
         {
             DataClassification = SystemMetadata;
@@ -111,7 +96,7 @@ table 50100 "BCWeb Shop Setup"
             Caption = 'Last Date Modified Items';
         }
     }
-   
+
     keys
     {
         key(Key1; "Primary Key")

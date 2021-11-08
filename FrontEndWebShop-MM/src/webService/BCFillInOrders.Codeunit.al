@@ -1,19 +1,19 @@
 codeunit 50116 "BCFillInOrders"
 {
-    procedure InsertOrders(BCWebShopSetup: Record "BCWeb Shop Setup"; PostedSalesHeaderNo: Code[20]; var BCCart: Record BCCart)
+    procedure InsertOrders(PostedSalesHeaderNo: Code[20]; var BCCart: Record BCCart)
     begin
         repeat
-            InsertOrder(BCWebShopSetup, PostedSalesHeaderNo, BCCart);
+            InsertOrder(PostedSalesHeaderNo, BCCart);
         until BCCart.Next() = 0;
     end;
 
-    local procedure InsertOrder(BCWebShopSetup: Record "BCWeb Shop Setup"; PostedSalesHeaderNo: Code[20]; var BCCart: Record BCCart)
+    local procedure InsertOrder(PostedSalesHeaderNo: Code[20]; var BCCart: Record BCCart)
     var
         BCOrders: Record BCOrders;
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
     begin
         BCOrders.Init();
-        BCOrders.Username := BCWebShopSetup.LoggedInUsername;
-        BCOrders.Email := BCWebShopSetup.LoggedInEmail;
+        BCOrders.Username := BCLoggedInUser.GetUser();
         BCOrders."Order No." := PostedSalesHeaderNo;
         BCOrders."Item No." := BCCart."Item No.";
         BCOrders.Description := BCCart.Description;

@@ -44,7 +44,7 @@ page 50105 "BCUser Information Queue"
 
     trigger OnOpenPage()
     var
-        BCWebShopSetup: Record "BCWeb Shop Setup";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
     begin
         Rec.Reset();
         if not Rec.Get() then begin
@@ -52,9 +52,7 @@ page 50105 "BCUser Information Queue"
             Rec.Insert();
         end;
 
-        BCWebShopSetup.Get();
-        Rec.Username := BCWebShopSetup.LoggedInUsername;
-        Rec.Email := BCWebShopSetup.LoggedInEmail;
+        Rec.Username := BCLoggedInUser.GetUser();
         Rec.Modify();
     end;
 }

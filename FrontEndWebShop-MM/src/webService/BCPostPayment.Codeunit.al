@@ -34,13 +34,14 @@ codeunit 50115 "BCPostPayment"
 
     local procedure GetPostedSalesInvoice(var BCWebShopSetup: Record "BCWeb Shop Setup"; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; httpClient: HttpClient; SalesHeaderNo: Code[20]): Boolean
     var
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         HttpResponseMessage: HttpResponseMessage;
         ResponseText: Text;
         JsonObject: JsonObject;
         WebErrorMsg: Label 'Error occurred: %1', Comment = '%1 is HTTP Status Code';
         BackEndWebShopUrlLbl: Label '%1/postedSalesInvoicesMM?$filter=customerNo eq ''%2'' and orderNo eq ''%3''', Comment = '%1 is Web Shop URL, %2 is customer no., %3 is order no., %4 is posting date';
     begin
-        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", BCWebShopSetup.UserNo, SalesHeaderNo), HttpResponseMessage);
+        httpClient.Get(StrSubstNo(BackEndWebShopUrlLbl, BCWebShopSetup."Backend Web Service URL", BCLoggedInUser.GetUserNo(), SalesHeaderNo), HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             JsonObject.ReadFrom(ResponseText);
@@ -78,6 +79,7 @@ codeunit 50115 "BCPostPayment"
     local procedure CreateGenJournalLine(var BCWebShopSetup: Record "BCWeb Shop Setup"; var httpClient: httpClient; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary): Text
     var
         GenJournalLine: Record "Gen. Journal Line";
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
         Text: Text;
         LineNo: Integer;
         JsonObject: JsonObject;
@@ -86,7 +88,7 @@ codeunit 50115 "BCPostPayment"
         JsonObject.Add('documentType', BCWebShopSetup."Document Type");
         JsonObject.Add('documentNo', CopyStr('PAY-' + TempSalesInvoiceHeader."No.", 1, MaxStrLen(GenJournalLine."Document No.")));
         JsonObject.Add('accountType', BCWebShopSetup."Account Type");
-        JsonObject.Add('accountNo', BCWebShopSetup.UserNo);
+        JsonObject.Add('accountNo', BCLoggedInUser.GetUserNo());
         JsonObject.Add('currencyCode', TempSalesInvoiceHeader."Currency Code");
         JsonObject.Add('paymentMethodCode', BCWebShopSetup."Payment Method Code");
         JsonObject.Add('creditAmount', TempSalesInvoiceHeader."Amount Including VAT");

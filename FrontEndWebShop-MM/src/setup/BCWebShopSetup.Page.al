@@ -46,29 +46,6 @@ page 50101 "BCWeb Shop Setup"
                     }
                 }
             }
-            group(LoggedIn)
-            {
-                Caption = 'Logged In User';
-
-                field(UserNo; Rec.UserNo)
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the User No. of logged in user.';
-                }
-                field(LoggedInUsername; Rec.LoggedInUsername)
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Username of logged in user.';
-                }
-                field(LoggedInEmail; Rec.LoggedInEmail)
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    ToolTip = 'Specifies the value of the Email of logged in user.';
-                }
-            }
             group(Customer)
             {
                 Caption = 'Customer Settings';

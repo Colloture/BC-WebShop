@@ -19,9 +19,6 @@ page 50111 "BCCustomerMM"
                 field(name; Rec.Name)
                 {
                 }
-                field(email; Rec."E-Mail")
-                {
-                }
                 field(genBusPostingGroup; Rec."Gen. Bus. Posting Group")
                 {
                 }

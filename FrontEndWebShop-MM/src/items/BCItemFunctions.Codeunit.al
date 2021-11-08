@@ -3,17 +3,14 @@ codeunit 50108 "BCItemFunctions"
     procedure AddNewItemToCart(var BCStoreItems: Record "BCStore Items")
     var
         BCCart: Record BCCart;
-        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to Add Items to Cart.');
 
         if BCStoreItems.Inventory = 0 then
             Error('This item isn''t available at the moment.');
 
-        BCCart.SetRange(Username, BCWebShopSetup.LoggedInUsername);
-        BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+        BCCart.SetRange(Username, BCLoggedInUser.GetUser());
         BCCart.SetRange("Item No.", BCStoreItems."No.");
 
         if not BCCart.IsEmpty then begin
@@ -24,8 +21,7 @@ codeunit 50108 "BCItemFunctions"
         end
         else begin
             BCCart.Init();
-            BCCart.Username := BCWebShopSetup.LoggedInUsername;
-            BCCart.Email := BCWebShopSetup.LoggedInEmail;
+            BCCart.Username := BCLoggedInUser.GetUser();
             BCCart."Item No." := BCStoreItems."No.";
             BCCart.Description := BCStoreItems.Description;
             BCCart."Item Category" := BCStoreItems."Item Category";
@@ -42,14 +38,11 @@ codeunit 50108 "BCItemFunctions"
     procedure OpenYourCart()
     var
         BCCart: Record BCCart;
-        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to see your Cart.');
 
-        BCCart.SetRange(Username, BCWebShopSetup.LoggedInUsername);
-        BCCart.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+        BCCart.SetRange(Username, BCLoggedInUser.GetUser());
 
         Page.Run(50110, BCCart);
     end;
@@ -57,22 +50,18 @@ codeunit 50108 "BCItemFunctions"
     procedure AddNewItemToFavorites(var BCStoreItems: Record "BCStore Items")
     var
         BCFavorites: Record BCFavorites;
-        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to Add Items to Favorites.');
 
-        BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
-        BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+        BCFavorites.SetRange(Username, BCLoggedInUser.GetUser());
         BCFavorites.SetRange("Item No.", BCStoreItems."No.");
 
         if not BCFavorites.IsEmpty then
             Message('Item is already in Favorites.')
         else begin
             BCFavorites.Init();
-            BCFavorites.Username := BCWebShopSetup.LoggedInUsername;
-            BCFavorites.Email := BCWebShopSetup.LoggedInEmail;
+            BCFavorites.Username := BCLoggedInUser.GetUser();
             BCFavorites."Item No." := BCStoreItems."No.";
             BCFavorites.Description := BCStoreItems.Description;
             BCFavorites."Item Category" := BCStoreItems."Item Category";
@@ -90,15 +79,15 @@ codeunit 50108 "BCItemFunctions"
     procedure OpenYourFavorites()
     var
         BCFavorites: Record BCFavorites;
-        BCWebShopSetup: Record "BCWeb Shop Setup";
     begin
-        BCWebShopSetup.Get();
-        if (BCWebShopSetup.LoggedInUsername = '') and (BCWebShopSetup.LoggedInEmail = '') then
+        if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to see your Favorites.');
 
-        BCFavorites.SetRange(Username, BCWebShopSetup.LoggedInUsername);
-        BCFavorites.SetRange(Email, BCWebShopSetup.LoggedInEmail);
+        BCFavorites.SetRange(Username, BCLoggedInUser.GetUser());
 
         Page.Run(50111, BCFavorites);
     end;
+
+    var
+        BCLoggedInUser: Codeunit "BCLoggedIn User";
 }
