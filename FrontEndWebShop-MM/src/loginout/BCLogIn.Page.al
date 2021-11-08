@@ -34,29 +34,6 @@ page 50108 "BCLogIn"
     {
         area(Navigation)
         {
-            // action(LogIn)
-            // {
-            //     ApplicationArea = All;
-            //     Caption = 'Log In';
-            //     ToolTip = 'Executes the Log In action.';
-            //     Image = Log;
-            //     Promoted = true;
-            //     PromotedOnly = true;
-            //     PromotedCategory = Process;
-            //     Visible = VisibleAction;
-
-            //     trigger OnAction()
-            //     var
-            //         BCPostCustomer: Codeunit "BCPost Customer";
-            //     begin
-            //         if (Rec.Name = '') and (Rec."E-Mail" = '') then
-            //             exit;
-            //         BCPostCustomer.Run(Rec);
-            //         VisibleAction := false;
-            //         CurrPage.Close();
-            //         Page.Run(50102);
-            //     end;
-            // }
             action(Register)
             {
                 ApplicationArea = All;

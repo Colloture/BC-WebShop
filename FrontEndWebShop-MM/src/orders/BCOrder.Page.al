@@ -41,6 +41,11 @@ page 50115 "BCOrder"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Status field.';
                 }
+                field(StatusChangedTime; Rec."Status Changed Time")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Status Change Time field.';
+                }
             }
         }
     }

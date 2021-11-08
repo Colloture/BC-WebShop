@@ -39,6 +39,12 @@ table 50111 "BCOrders"
         {
             DataClassification = CustomerContent;
             Caption = 'Status';
+            // TODO - add connection to table that will show all statuses with datetime changes (maybe)
+        }
+        field(9; "Status Changed Time"; DateTime)
+        {
+            DataClassification = CustomerContent;
+            Caption = 'Status Change Time';
         }
     }
 

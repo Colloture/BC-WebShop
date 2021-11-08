@@ -19,6 +19,7 @@ codeunit 50116 "BCFillInOrders"
         BCOrders.Description := BCCart.Description;
         BCOrders.Amount := BCCart.Amount;
         BCOrders.Status := BCOrders.Status::Received;
+        BCOrders."Status Changed Time" := CurrentDateTime;
         BCOrders.Insert();
     end;
 }
