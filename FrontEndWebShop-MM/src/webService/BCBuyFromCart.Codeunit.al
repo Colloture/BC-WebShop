@@ -13,14 +13,18 @@ codeunit 50107 "BCBuyFromCart"
         BCFillInOrders: Codeunit BCFillInOrders;
         httpClient: httpClient;
         SalesHeaderNo: Code[20];
-        SalesHeaderDocumentType: Text;
         PostedSalesHeaderNo: Code[20];
+        SalesHeaderDocumentType: Text;
+        ConfirmBuyingLbl: Label 'Are you sure you want to proceed with this purchase?';
     begin
         if BCLoggedInUser.GetUser() = '' then
             Error('Please Log In in order to Buy Items.');
 
         if Rec.Count = 0 then
             Error('Your Cart is empty.');
+
+        if not Confirm(ConfirmBuyingLbl) then
+            exit;
 
         BCWebShopSetup.Get();
         BCAuthorization.SetAuthorization(BCWebShopSetup, httpClient);
