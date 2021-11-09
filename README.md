@@ -6,10 +6,19 @@ Both backend and frontend are done in BC, for practice purposes.
 
 ## Backend
 https://bc-webshop.westeurope.cloudapp.azure.com
-
-Creating new Customer, creating and posting Sales Order and Invoicing are implemented on backend.
+- Getting all Sports Equipment Items
+- Creating new Customer
+- Creating and posting Sales Order
+- Invoicing
 
 ## Frontend
 http://bcv18-5-pr2021/BC
-
-Adding to Favorites, Cart and Orders List are implemented on frontend.
+- Register or Log In
+- Log Out
+- Search Items
+- Item Categories (type, brand, sport)
+- Add to Favorites
+- Add to Cart 
+- Buy Items from Cart
+- My Orders List
+- Order Tracking History
