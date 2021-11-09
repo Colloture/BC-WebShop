@@ -38,8 +38,7 @@ table 50111 "BCOrders"
         field(8; Status; Enum "BCOrder Status")
         {
             DataClassification = CustomerContent;
-            Caption = 'Status';
-            // TODO - add connection to table that will show all statuses with datetime changes (maybe)
+            Caption = 'Current Status';
         }
         field(9; "Status Changed Time"; DateTime)
         {

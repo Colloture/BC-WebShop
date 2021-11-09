@@ -3,7 +3,6 @@ page 50103 "BCWeb Shop RC"
     Caption = 'Web Shop RC';
     PageType = RoleCenter;
     RefreshOnActivate = true;
-    SourceTable = "BCSports Equipment Cue";
 
     layout
     {

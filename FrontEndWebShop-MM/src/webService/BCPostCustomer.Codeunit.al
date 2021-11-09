@@ -6,6 +6,7 @@ codeunit 50105 "BCPost Customer"
         BCLoggedInUser: Codeunit "BCLoggedIn User";
         BCAuthorization: Codeunit BCAuthorization;
         ResponseText: Text;
+        UserNo: Code[20];
         httpClient: httpClient;
         HttpResponseMessage: HttpResponseMessage;
         JsonObject: JsonObject;
@@ -32,9 +33,9 @@ codeunit 50105 "BCPost Customer"
         else
             foreach JsonToken in JsonArray do begin
                 JsonObject := JsonToken.AsObject();
-                ResponseText := GetFieldValue(JsonObject, 'no').AsCode();
+                UserNo := CopyStr(GetFieldValue(JsonObject, 'no').AsCode(), 1, MaxStrLen(UserNo));
 
-                BCLoggedInUser.SetUserNo(ResponseText);
+                BCLoggedInUser.SetUserNo(UserNo);
                 Message('Successfully logged in.');
                 exit;
             end;
@@ -46,6 +47,7 @@ codeunit 50105 "BCPost Customer"
         BCLoggedInUser: Codeunit "BCLoggedIn User";
         BCAuthorization: Codeunit BCAuthorization;
         ResponseText: Text;
+        UserNo: Code[20];
         httpClient: httpClient;
         httpContent: HttpContent;
         httpHeaders: HttpHeaders;
@@ -69,9 +71,9 @@ codeunit 50105 "BCPost Customer"
         httpClient.Send(httpRequestMessage, HttpResponseMessage);
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
-            ParseResponse(ResponseText);
+            ParseResponse(ResponseText, UserNo);
 
-            BCLoggedInUser.SetUserNo(ResponseText);
+            BCLoggedInUser.SetUserNo(UserNo);
             Message('Successfull register.')
         end
         else
@@ -92,12 +94,12 @@ codeunit 50105 "BCPost Customer"
         exit(Text);
     end;
 
-    local procedure ParseResponse(var ResponseText: Text)
+    local procedure ParseResponse(ResponseText: Text; var UserNo: Code[20])
     var
         JsonObject: JsonObject;
     begin
         JsonObject.ReadFrom(ResponseText);
-        ResponseText := GetFieldValue(JsonObject, 'no').AsCode();
+        UserNo := CopyStr(GetFieldValue(JsonObject, 'no').AsCode(), 1, MaxStrLen(UserNo));
     end;
 
     local procedure GetFieldValue(var JsonObject: JsonObject; FieldName: Text): JsonValue
