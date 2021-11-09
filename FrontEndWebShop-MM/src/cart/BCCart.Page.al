@@ -52,7 +52,7 @@ page 50110 "BCCart"
             }
             group(Totals)
             {
-                field(Total; TotalAmount)
+                field(Total; Rec.TotalAmount)
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Total Amount field.';

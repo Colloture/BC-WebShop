@@ -46,7 +46,7 @@ table 50107 "BCCart"
         }
         field(10; TotalAmount; Decimal)
         {
-            Caption = 'Total Amount Excl. VAT';
+            Caption = 'Total Amount';
             FieldClass = FlowField;
             CalcFormula = sum(BCCart.Amount where(Username = field(Username)));
         }
