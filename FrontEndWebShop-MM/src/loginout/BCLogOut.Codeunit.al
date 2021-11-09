@@ -5,7 +5,7 @@ codeunit 50106 "BCLogOut"
         BCLoggedInUser: Codeunit "BCLoggedIn User";
     begin
         if BCLoggedInUser.GetUser() = '' then
-            exit;
+            Error('No one is logged in.');
 
         BCLoggedInUser.SetUser('');
 

@@ -50,6 +50,9 @@ page 50108 "BCLogIn"
                     BCPostCustomer: Codeunit "BCPost Customer";
                     BCLoggedInUser: codeunit "BCLoggedIn User";
                 begin
+                    if (Username = '') or (Password = '') then
+                        Error('You must fill in both Username and Password fields.');
+
                     BCLoggedInUser.SetUser(Username);
                     BCLoggedInUser.Register(Password);
 
@@ -75,6 +78,9 @@ page 50108 "BCLogIn"
                     BCPostCustomer: Codeunit "BCPost Customer";
                     BCLoggedInUser: Codeunit "BCLoggedIn User";
                 begin
+                    if (Username = '') or (Password = '') then
+                        Error('You must fill in both Username and Password fields.');
+
                     BCLoggedInUser.SetUser(Username);
                     BCLoggedInUser.ValidatePassword(Password);
 
