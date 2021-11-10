@@ -37,7 +37,7 @@ page 50139 "BCGenJournalLine-MM"
                 field(paymentMethodCode; Rec."Payment Method Code")
                 {
                 }
-                field(creditAmount; Rec."Credit Amount")
+                field(amount; Rec.Amount)
                 {
                 }
                 field(appliesToDocType; Rec."Applies-to Doc. Type")

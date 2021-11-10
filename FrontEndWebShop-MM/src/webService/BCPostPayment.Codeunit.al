@@ -4,6 +4,7 @@ codeunit 50115 "BCPostPayment"
     var
         TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary;
         Text: Text;
+        Amount: Decimal;
         httpContent: HttpContent;
         httpHeaders: HttpHeaders;
         HttpResponseMessage: HttpResponseMessage;
@@ -11,11 +12,11 @@ codeunit 50115 "BCPostPayment"
         WebErrorMsg: Label 'Error occurred: %1 - %2', Comment = '%1 is HTTP Status Code, %2 is message';
         BackEndPostUrlLbl: Label '%1/genJournalLinesMM', Comment = '%1 is Web Shop URL';
     begin
-        if GetPostedSalesInvoice(BCWebShopSetup, TempSalesInvoiceHeader, httpClient, SalesHeaderNo) then begin
+        if GetPostedSalesInvoice(BCWebShopSetup, TempSalesInvoiceHeader, httpClient, SalesHeaderNo, Amount) then begin
 
             TempSalesInvoiceHeader.CalcFields("Amount Including VAT");
 
-            httpContent.WriteFrom(CreateGenJournalLine(BCWebShopSetup, httpClient, TempSalesInvoiceHeader));
+            httpContent.WriteFrom(CreateGenJournalLine(BCWebShopSetup, httpClient, TempSalesInvoiceHeader, Amount));
             httpContent.GetHeaders(httpHeaders);
             httpHeaders.Remove('Content-Type');
             httpHeaders.Add('Content-Type', 'application/json');
@@ -32,7 +33,7 @@ codeunit 50115 "BCPostPayment"
         end;
     end;
 
-    local procedure GetPostedSalesInvoice(var BCWebShopSetup: Record "BCWeb Shop Setup"; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; httpClient: HttpClient; SalesHeaderNo: Code[20]): Boolean
+    local procedure GetPostedSalesInvoice(var BCWebShopSetup: Record "BCWeb Shop Setup"; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; httpClient: HttpClient; SalesHeaderNo: Code[20]; var Amount: Decimal): Boolean
     var
         BCLoggedInUser: Codeunit "BCLoggedIn User";
         HttpResponseMessage: HttpResponseMessage;
@@ -45,13 +46,13 @@ codeunit 50115 "BCPostPayment"
         if HttpResponseMessage.IsSuccessStatusCode() then begin
             HttpResponseMessage.Content().ReadAs(ResponseText);
             JsonObject.ReadFrom(ResponseText);
-            exit(ParseJsonSalesInvoiceHeader(ResponseText, TempSalesInvoiceHeader));
+            exit(ParseJsonSalesInvoiceHeader(ResponseText, TempSalesInvoiceHeader, Amount));
         end
         else
             Error(WebErrorMsg, HttpResponseMessage.HttpStatusCode());
     end;
 
-    local procedure ParseJsonSalesInvoiceHeader(ResponseText: Text; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary): Boolean
+    local procedure ParseJsonSalesInvoiceHeader(ResponseText: Text; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; var Amount: Decimal): Boolean
     var
         JsonObject: JsonObject;
         JsonToken: JsonToken;
@@ -68,6 +69,7 @@ codeunit 50115 "BCPostPayment"
 
                 TempSalesInvoiceHeader.Init();
                 TempSalesInvoiceHeader."No." := CopyStr(GetFieldValue(JsonObject, 'postedNo').AsCode(), 1, MaxStrLen(TempSalesInvoiceHeader."No."));
+                Amount := GetFieldValue(JsonObject, 'amountIncludingVAT').AsDecimal();
                 TempSalesInvoiceHeader."Amount Including VAT" := GetFieldValue(JsonObject, 'amountIncludingVAT').AsDecimal();
                 TempSalesInvoiceHeader."Currency Code" := CopyStr(GetFieldValue(JsonObject, 'currencyCode').AsCode(), 1, MaxStrLen(TempSalesInvoiceHeader."Currency Code"));
                 TempSalesInvoiceHeader.Insert();
@@ -76,7 +78,7 @@ codeunit 50115 "BCPostPayment"
             end;
     end;
 
-    local procedure CreateGenJournalLine(var BCWebShopSetup: Record "BCWeb Shop Setup"; var httpClient: httpClient; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary): Text
+    local procedure CreateGenJournalLine(var BCWebShopSetup: Record "BCWeb Shop Setup"; var httpClient: httpClient; var TempSalesInvoiceHeader: Record "Sales Invoice Header" temporary; Amount: Decimal): Text
     var
         GenJournalLine: Record "Gen. Journal Line";
         BCLoggedInUser: Codeunit "BCLoggedIn User";
@@ -91,7 +93,7 @@ codeunit 50115 "BCPostPayment"
         JsonObject.Add('accountNo', BCLoggedInUser.GetUserNo());
         JsonObject.Add('currencyCode', TempSalesInvoiceHeader."Currency Code");
         JsonObject.Add('paymentMethodCode', BCWebShopSetup."Payment Method Code");
-        JsonObject.Add('creditAmount', TempSalesInvoiceHeader."Amount Including VAT");
+        JsonObject.Add('amount', -Amount);
         JsonObject.Add('appliesToDocType', BCWebShopSetup."Applies To Doc. Type");
         JsonObject.Add('appliesToDocNo', TempSalesInvoiceHeader."No.");
         JsonObject.Add('balAccountType', BCWebShopSetup."Bal. Account Type");
